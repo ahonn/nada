@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-11 23:34:49
 # @Last Modified by:   Ahonn
-# @Last Modified time: 2016-01-12 17:47:41
+# @Last Modified time: 2016-01-12 18:17:56
 
 import os
 import sys
@@ -13,7 +13,6 @@ import re
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
 class Luoo:
 	"""Get Luoo Vol"""
 	url = None
@@ -24,6 +23,7 @@ class Luoo:
 	desc = None
 	music = None
 	html = None
+	error = None
 
 	def set_number(self, number):
 		self.name = None
@@ -99,16 +99,21 @@ class Luoo:
 		for i in xrange(1, len(music_list) + 1):
 			music_name = music_list[i-1] + '.mp3'
 			filename = self.path + '/' + music_name
-			url = 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + str(self.number) + '/' + str("%02d" % i) + '.mp3'
-			if not os.path.exists(filename):
-				if requests.get(url).status_code == 404:
-					url = 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + str(self.number) + '/' + str(i) + '.mp3'
-				urllib.urlretrieve(url , filename)
-				yield 'Download ' + music_name
-			else:
-				yield 'Exists ' + music_name
-	
+			url = 'http://emo.luoo.net/low/luoo/radio' + str(self.number) + '/' + str("%02d" % i) + '.mp3'
+			try:
+				if not os.path.exists(filename):
+					if requests.get(url).status_code == 404:
+						url = 'http://emo.luoo.net/low/luoo/radio' + str(self.number) + '/' + str(i) + '.mp3'
+					urllib.urlretrieve(url , filename)
+					yield 'Download ' + music_name
+				else:
+					yield 'Exists ' + music_name
+			except Exception, e:
+				self.error.append(filename)
+				yield 'Error ' + music_name
+				
 	def download_vol(self, number, path = None):
+		self.error = []
 		self.set_number(number)
 		self.set_path(path)
 		if self.download_cover():
@@ -118,8 +123,14 @@ class Luoo:
 		if self.download_desc():
 			print 'Download vol.' + str(self.number) + ' description'
 		
-		music = self.download_music()
-		for message in music:
+		music_message = self.download_music()
+		for message in music_message:
 			print message
 
 		print '--------------vol.' + str(self.number) + ' Finish!!---------------'
+
+	def log(self):
+		for message in self.error:
+			f = open('error.txt', 'a')
+	        f.write(message + '\n')
+	        f.close()

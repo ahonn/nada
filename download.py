@@ -3,8 +3,9 @@
 # @Author: Ahonn
 # @Date:   2016-01-12 00:15:44
 # @Last Modified by:   Ahonn
-# @Last Modified time: 2016-01-12 17:06:48
+# @Last Modified time: 2016-01-12 18:19:15
 import sys
+import time
 from luoo import Luoo
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -20,5 +21,7 @@ else:
 
 	for i in xrange(minn, maxn):
 		Luoo.download_vol(i)
+		Luoo.log()
+		time.sleep(1)
 
 
