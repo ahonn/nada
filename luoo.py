@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-11 23:34:49
 # @Last Modified by:   Ahonn
-# @Last Modified time: 2016-01-12 17:16:33
+# @Last Modified time: 2016-01-12 17:47:41
 
 import os
 import sys
@@ -101,6 +101,8 @@ class Luoo:
 			filename = self.path + '/' + music_name
 			url = 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + str(self.number) + '/' + str("%02d" % i) + '.mp3'
 			if not os.path.exists(filename):
+				if requests.get(url).status_code == 404:
+					url = 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + str(self.number) + '/' + str(i) + '.mp3'
 				urllib.urlretrieve(url , filename)
 				yield 'Download ' + music_name
 			else:
