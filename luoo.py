@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-11 23:34:49
 # @Last Modified by:   Ahonn
-# @Last Modified time: 2016-01-12 18:17:56
+# @Last Modified time: 2016-01-12 18:44:59
 
 import os
 import sys
@@ -130,7 +130,7 @@ class Luoo:
 		print '--------------vol.' + str(self.number) + ' Finish!!---------------'
 
 	def log(self):
+		f = open('error.txt', 'a')
 		for message in self.error:
-			f = open('error.txt', 'a')
-	        f.write(message + '\n')
-	        f.close()
+			f.write(message + '\n')
+		f.close()
