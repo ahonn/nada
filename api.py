@@ -3,7 +3,7 @@
 # @Author: ahonn
 # @Date:   2016-01-22 13:35:23
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-23 20:23:00
+# @Last Modified time: 2016-01-24 14:08:46
 
 import os
 import sys
@@ -21,16 +21,17 @@ class Luoo:
 
 	def music(self, type = ""):
 		music = []
-		url = self.url + '/tag/' + type + '?p=1'
-		soup = self.parser(url)
-
-		for item in soup.find_all("a", class_="name"):
-			vol = {
-				"number" : item['href'].split('/')[-1],
-				"name" : item.string.encode("utf-8"), 
-				"url" : item['href']
-			}
-			music.append(vol)
+		for x in xrange(1, 10):
+			url = self.url + '/tag/' + type + '?p=' + str(x)
+			soup = self.parser(url)
+			
+			for item in soup.find_all("a", class_="name"):
+				vol = {
+					"number" : item["href"].split('/')[-1],
+					"name" : item.string.encode("utf-8"), 
+					"url" : item["href"]
+				}
+				music.append(vol)
 		return music
 
 	def vol(self, number):
@@ -53,6 +54,19 @@ class Luoo:
 			song_num += 1
 		return vol
 
+	def typelist(self):
+		url = self.url + '/music/'
+		soup = self.parser(url)
+
+		typelist = []
+		items = soup.find_all("a", class_="item")
+		for x in xrange(1, len(items)):
+			vtype = {
+				"name" : items[x].text,
+				"id" : items[x]["href"].split('/')[-1]
+			}
+			typelist.append(vtype)
+		return typelist
 
 		
 		

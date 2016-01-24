@@ -3,7 +3,7 @@
 # @Author: ahonn
 # @Date:   2016-01-23 13:52:19
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-23 21:14:20
+# @Last Modified time: 2016-01-24 14:03:06
 
 
 import curses
@@ -13,6 +13,7 @@ class UI:
 	def __init__(self):
 		self.screen = curses.initscr()
 		curses.cbreak()
+		curses.noecho()
 		self.screen.keypad(1)
 		self.luoo = Luoo()
 		
@@ -43,16 +44,23 @@ class UI:
 		self.screen.clrtobot()
 		self.screen.addstr(4, 19, title, curses.color_pair(1))
 
-		if datatype != 'about' and len(datalist) == 0:
+		if len(datalist) == 0:
 			self.screen.addstr(8, 19, 'Nothing ...')
 		else:
 			if datatype == 'menu':
-				for i in xrange(offset, min(len(datalist), offset+step)):
+				for i in xrange(offset, len(datalist)):
 					if i == index:
 						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
 					else:
 						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i])
 
+			elif datatype == 'vtype':
+				for i in xrange(offset, min(len(datalist), offset+step)):
+					if i == index:
+						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i]["name"], curses.color_pair(2))
+					else:
+						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i]["name"])
+						
 			elif datatype == 'songs':
 				for i in xrange(offset, len(datalist)):
 					if i == index:

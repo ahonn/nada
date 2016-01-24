@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-14 23:41:58
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-23 21:10:18
+# @Last Modified time: 2016-01-24 14:17:51
 
 '''
 落网 Menu
@@ -32,7 +32,7 @@ class Menu:
 		sys.setdefaultencoding('UTF-8')
 		self.datatype = 'menu'
 		self.title = '落网'
-		self.datalist = ['最新期刊', '搜索期刊', '关于']
+		self.datalist = ['最新期刊', '分类期刊','搜索期刊', '关于']
 		self.offset = 0
 		self.index = 0
 		self.presentsong = []
@@ -63,13 +63,25 @@ class Menu:
 				break
 			
 			elif key == ord('k'):
-				self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx-1 )
+				if idx == offset:
+					if offset == 0:
+					    continue
+					self.offset -= step
+					self.index = offset - 1
+				else:
+					self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx - 1)
 
 			elif key == ord('j'):
-				self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx+1 )
+				if idx == min( len(datalist), offset + step) - 1:
+					if offset + step >= len( datalist ):
+						continue
+					self.offset += step
+					self.index = offset + step
+				else:
+					self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx + 1)
 
 			elif key == ord('l'):
-				if self.datatype == 'songs':
+				if self.datatype == 'songs' or self.datatype == 'about':
 					continue
 				self.ui.loading()
 				self.dispatch(idx)
@@ -140,6 +152,13 @@ class Menu:
 		if datatype == 'menu':
 			self.choice(idx)
 		
+		elif datatype == 'vtype':
+			type_id = datalist[idx]["id"]
+			type_name = datalist[idx]["name"]
+			self.datatype = 'vols'
+			self.datalist = luoo.music(type_id)
+			self.title += ' > ' + type_name
+
 		elif datatype == 'vols':
 			vol_number = datalist[idx]['number']
 			self.datatype = 'songs'
@@ -155,12 +174,16 @@ class Menu:
 			self.title += ' > 最新期刊'
 
 		elif idx == 1:
-			self.search()
+			self.datalist = luoo.typelist()
+			self.datatype = 'vtype'
+			self.title += ' > 分类期刊'
 
 		elif idx == 2:
+			self.search()
+
+		elif idx == 3:
 			self.datatype = 'about'
-			self.datalist = []
-			self.title = '关于'
+			self.title += ' > 关于'
 
 		self.offset = 0
 		self.index = 0 
