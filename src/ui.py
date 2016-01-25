@@ -3,7 +3,7 @@
 # @Author: ahonn
 # @Date:   2016-01-23 13:52:19
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-24 14:03:06
+# @Last Modified time: 2016-01-25 16:35:24
 
 
 import curses
@@ -22,24 +22,25 @@ class UI:
 		curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
 		curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
 		curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+		curses.init_pair(5, curses.COLOR_BLUE, curses.COLOR_BLACK)
 
-	def playinfo(self, song_name, artist, pause=False):
+	def playinfo(self, name, artist, pause=False):
 		self.screen.move(1, 1)
 		self.screen.clrtoeol()
 		self.screen.move(2, 1)
 		self.screen.clrtoeol()
 		if pause:
-			self.screen.addstr(1, 6, '_ _ z Z Z', curses.color_pair(3))
+			self.screen.addstr(1, 19, '_ _ z Z Z', curses.color_pair(3))
 		else:
-			self.screen.addstr(1, 6, '♫  ♪ ♫  ♪', curses.color_pair(3))
-		self.screen.addstr(1, 19, song_name + '  -  ' + artist, curses.color_pair(4))
+			self.screen.addstr(1, 19, '♫  ♪ ♫  ♪', curses.color_pair(3))
+		self.screen.addstr(1, 32, name + '  -  ' + artist, curses.color_pair(4))
 		self.screen.refresh()
 
 	def loading(self):
 		self.screen.addstr(6, 19, '我们，记录独立音乐， Loading...', curses.color_pair(1))
 		self.screen.refresh()
 
-	def menu(self, datatype, title, datalist, offset, index, step):
+	def menu(self, datatype, title, datalist, offset, index, step, playing):
 		self.screen.move(4, 1)
 		self.screen.clrtobot()
 		self.screen.addstr(4, 19, title, curses.color_pair(1))
@@ -63,10 +64,14 @@ class UI:
 						
 			elif datatype == 'songs':
 				for i in xrange(offset, len(datalist)):
-					if i == index:
-						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'], curses.color_pair(2))
+					if i == index and i == playing:
+						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
+					elif i == index:
+						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
+					elif i == playing:
+						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:50], curses.color_pair(5))
 					else:
-						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])
+						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:48])
 
 			elif datatype == 'vols':
 				for i in xrange(offset, min(len(datalist), offset+step)):

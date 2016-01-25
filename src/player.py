@@ -3,7 +3,7 @@
 # @Author: ahonn
 # @Date:   2016-01-22 19:35:36
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-24 15:36:10
+# @Last Modified time: 2016-01-25 16:15:04
 
 import subprocess
 import threading
@@ -23,7 +23,7 @@ class Player:
 		self.playing_flag = False
 		self.pause_flag = False
 		self.songs = []
-		self.idx = 0
+		self.idx = -1
 
 	def popen_recall(self, onExit, popenArgs):
 
@@ -99,11 +99,9 @@ class Player:
 		time.sleep(0.01)
 		self.idx = carousel(0, len(self.songs)-1, self.idx+1)
 		self.recall()
-		return self.idx
 
 	def prev(self):
 		self.stop()
 		time.sleep(0.01)
 		self.idx = carousel(0, len(self.songs)-1, self.idx-1)
 		self.recall()
-		return self.idx

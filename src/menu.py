@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-14 23:41:58
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-24 15:14:49
+# @Last Modified time: 2016-01-25 16:15:27
 
 '''
 落网 Menu
@@ -35,6 +35,7 @@ class Menu:
 		self.datalist = ['最新期刊', '分类期刊','搜索期刊', '关于']
 		self.offset = 0
 		self.index = 0
+		self.playing = -1
 		self.presentsong = []
 		self.player = Player()
 		self.ui = UI()
@@ -45,7 +46,7 @@ class Menu:
 		self.stack = []
 		
 	def start(self):
-		self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step)
+		self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.playing)
 		self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index])
 
 		while True:
@@ -54,6 +55,7 @@ class Menu:
 			datalist = self.datalist
 			offset = self.offset
 			idx = index = self.index
+			playing = self.playing
 			step = self.step
 			stack = self.stack
 			key = self.screen.getch()
@@ -106,11 +108,13 @@ class Menu:
 				self.player.play(datatype, datalist, idx)
 
 			elif key == ord(']'):
-				self.index = self.player.next()
+				self.player.next()
+				self.index = self.player.idx
 				time.sleep(0.1)
 
 			elif key == ord('['):
-				self.index = self.player.prev()
+				self.player.prev()
+				self.index = self.player.idx
 				time.sleep(0.1)
 
 			elif key == ord('p'):
@@ -132,10 +136,8 @@ class Menu:
 					self.offset = 0
 					self.index = 0
 
-			else:
-				pass
-
-			self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step)
+			self.playing = self.player.idx
+			self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.playing)
 
 		self.player.stop()
 		curses.endwin()
