@@ -3,7 +3,7 @@
 # @Author: Ahonn
 # @Date:   2016-01-14 23:41:58
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-25 16:15:27
+# @Last Modified time: 2016-01-25 16:43:37
 
 '''
 落网 Menu
@@ -55,7 +55,6 @@ class Menu:
 			datalist = self.datalist
 			offset = self.offset
 			idx = index = self.index
-			playing = self.playing
 			step = self.step
 			stack = self.stack
 			key = self.screen.getch()
@@ -138,6 +137,7 @@ class Menu:
 
 			self.playing = self.player.idx
 			self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.playing)
+			self.ui.screen.refresh()
 
 		self.player.stop()
 		curses.endwin()

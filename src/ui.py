@@ -3,7 +3,7 @@
 # @Author: ahonn
 # @Date:   2016-01-23 13:52:19
 # @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-25 16:35:24
+# @Last Modified time: 2016-01-25 16:42:01
 
 
 import curses
@@ -67,7 +67,7 @@ class UI:
 					if i == index and i == playing:
 						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
 					elif i == index:
-						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
+						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
 					elif i == playing:
 						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:50], curses.color_pair(5))
 					else:
