@@ -1,20 +1,14 @@
-### LuooMusic 
+## LuooMusic 
 
 落网音乐命令行播放器。基于 python ，需要使用 `BeautifulSoup`, `requests` 模块。Just for fun～
 
-#### 依赖模块安装
-BeautifulSoup:
+##### 安装：
+`$ sudo python setup.py install`
 
-`$ sudo pip install beautifulsoup4`
+##### 运行
+`$ luoo`
 
-requests:
-
-`$ sudo pip install requests`
-
-#### 终端下运行：
-`$ python music.py`
-
-#### 基本操作:
+##### 基本操作:
 
 键   | 功能
 ----:|:---------
