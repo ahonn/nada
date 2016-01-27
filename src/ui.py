@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author: ahonn
-# @Date:   2016-01-23 13:52:19
-# @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-25 16:42:01
-
 
 import curses
 from api import Luoo
@@ -40,7 +35,7 @@ class UI:
 		self.screen.addstr(6, 19, '我们，记录独立音乐， Loading...', curses.color_pair(1))
 		self.screen.refresh()
 
-	def menu(self, datatype, title, datalist, offset, index, step, playing):
+	def menu(self, datatype, title, datalist, offset, index, step, number, playing):
 		self.screen.move(4, 1)
 		self.screen.clrtobot()
 		self.screen.addstr(4, 19, title, curses.color_pair(1))
@@ -63,15 +58,16 @@ class UI:
 						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i]["name"])
 						
 			elif datatype == 'songs':
-				for i in xrange(offset, len(datalist)):
-					if i == index and i == playing:
-						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
+				song = datalist['song']
+				for i in xrange(offset, min(len(song), offset+step)):
+					if i == index and i == playing and number == datalist['number']:
+						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + song[i]['name'] + '  -  ' + song[i]['artist'])[:51], curses.color_pair(2))
+					elif i == playing and number == datalist['number']:
+						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + song[i]['name'] + '  -  ' + song[i]['artist'])[:50], curses.color_pair(5))
 					elif i == index:
-						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:51], curses.color_pair(2))
-					elif i == playing:
-						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:50], curses.color_pair(5))
+						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + song[i]['name'] + '  -  ' + song[i]['artist'])[:51], curses.color_pair(2))
 					else:
-						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + datalist[i]['name'] + '  -  ' + datalist[i]['artist'])[:48])
+						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + song[i]['name'] + '  -  ' + song[i]['artist'])[:48])
 
 			elif datatype == 'vols':
 				for i in xrange(offset, min(len(datalist), offset+step)):
@@ -100,7 +96,9 @@ class UI:
 		self.screen.clrtobot()
 		self.screen.addstr(5, 19, prompt_string, curses.color_pair(1))
 		self.screen.refresh()
+		curses.echo()
 		info = self.screen.getstr(10, 19, 60)
+		curses.noecho()
 		if info.strip() is '':
 		    return self.get_param(prompt_string)
 		else:

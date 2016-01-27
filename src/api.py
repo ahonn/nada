@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author: ahonn
-# @Date:   2016-01-22 13:35:23
-# @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-24 14:08:46
 
 import os
 import sys

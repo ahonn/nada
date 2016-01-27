@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author: ahonn
-# @Date:   2016-01-22 19:35:36
-# @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-25 16:15:04
 
 import subprocess
 import threading
@@ -23,6 +19,7 @@ class Player:
 		self.playing_flag = False
 		self.pause_flag = False
 		self.songs = []
+		self.number = -1
 		self.idx = -1
 
 	def popen_recall(self, onExit, popenArgs):
@@ -44,8 +41,10 @@ class Player:
 		self.ui.playinfo(item['name'], item['artist'])
 		self.popen_recall(self.recall, item['url'])
 
-	def play(self, datatype, songs, idx):
+	def play(self, datatype, datalist, idx):
 		self.datatype = datatype
+		songs = datalist['song']
+		number = datalist['number']
 
 		if datatype == 'songs':
 			if idx == self.idx and songs == self.songs:
@@ -57,6 +56,7 @@ class Player:
 			else:
 				self.songs = songs
 				self.idx = idx
+				self.number = number
 
 				if self.playing_flag:
 					self.switch()

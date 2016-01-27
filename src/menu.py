@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author: Ahonn
-# @Date:   2016-01-14 23:41:58
-# @Last Modified by:   ahonn
-# @Last Modified time: 2016-01-25 16:43:37
 
 '''
 落网 Menu
@@ -36,6 +32,7 @@ class Menu:
 		self.offset = 0
 		self.index = 0
 		self.playing = -1
+		self.number = -1
 		self.presentsong = []
 		self.player = Player()
 		self.ui = UI()
@@ -46,8 +43,8 @@ class Menu:
 		self.stack = []
 		
 	def start(self):
-		self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.playing)
-		self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index])
+		self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.number, self.playing)
+		self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index, self.playing])
 
 		while True:
 			datatype = self.datatype
@@ -55,6 +52,7 @@ class Menu:
 			datalist = self.datalist
 			offset = self.offset
 			idx = index = self.index
+			playing = self.playing
 			step = self.step
 			stack = self.stack
 			key = self.screen.getch()
@@ -64,22 +62,32 @@ class Menu:
 				break
 			
 			elif key == ord('k'):
+				if datatype == 'songs':
+					length = len(datalist['song'])
+				else:
+					length = len(datalist)
+
 				if idx == offset:
 					if offset == 0:
 					    continue
 					self.offset -= step
 					self.index = offset - 1
 				else:
-					self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx - 1)
+					self.index = carousel(offset, min(length, offset + step) - 1, idx - 1)
 
 			elif key == ord('j'):
-				if idx == min( len(datalist), offset + step) - 1:
-					if offset + step >= len( datalist ):
+				if datatype == 'songs':
+					length = len(datalist['song'])
+				else:
+					length = len(datalist)
+
+				if idx == min(length, offset + step) - 1:
+					if offset + step >= length:
 						continue
 					self.offset += step
 					self.index = offset + step
 				else:
-					self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx + 1)
+					self.index = carousel(offset, min(length, offset + step) - 1, idx + 1)
 
 			elif key == ord('l'):
 				if self.datatype == 'songs' or self.datatype == 'about':
@@ -88,6 +96,7 @@ class Menu:
 				self.dispatch(idx)
 				self.index = 0
 				self.offset = 0
+				self.playing = -1
 
 			elif key == ord('h'):
 				if len(self.stack) == 1:
@@ -98,37 +107,41 @@ class Menu:
 				self.datalist = up[2]
 				self.offset = up[3]
 				self.index = up[4]
+				self.playing = up[5]
 
 			elif key == ord('f'):
 				self.search()
 
 			elif key == ord(' '):
-				self.presentsongs = ['songs', title, datalist, offset, index]
+				self.presentsongs = ['songs', title, datalist, offset, index, playing]
 				self.player.play(datatype, datalist, idx)
 
 			elif key == ord(']'):
 				self.player.next()
-				self.index = self.player.idx
+				if datatype == 'songs':
+					self.index = self.player.idx
 				time.sleep(0.1)
 
 			elif key == ord('['):
 				self.player.prev()
-				self.index = self.player.idx
+				if datatype == 'songs':
+					self.index = self.player.idx
 				time.sleep(0.1)
 
 			elif key == ord('p'):
 				if len(self.presentsongs) == 0:
 					continue
-				self.stack.append([datatype, title, datalist, offset, index])
+				self.stack.append([datatype, title, datalist, offset, index, playing])
 				self.datatype = self.presentsongs[0]
 				self.title = self.presentsongs[1]
 				self.datalist = self.presentsongs[2]
 				self.offset = self.presentsongs[3]
 				self.index = self.presentsongs[4]
+				self.playing = self.presentsongs[5]
 
 			elif key == ord('m'):
-				if datatype != 'mian':
-					self.stack.append([datatype, title, datalist, offset, index])
+				if datatype != 'menu':
+					self.stack.append([datatype, title, datalist, offset, index,  playing])
 					self.datatype = self.stack[0][0]
 					self.title = self.stack[0][1]
 					self.datalist = self.stack[0][2]
@@ -136,8 +149,8 @@ class Menu:
 					self.index = 0
 
 			self.playing = self.player.idx
-			self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.playing)
-			self.ui.screen.refresh()
+			self.number = self.player.number
+			self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.number, self.playing)
 
 		self.player.stop()
 		curses.endwin()
@@ -149,7 +162,8 @@ class Menu:
 		datalist = self.datalist
 		offset = self.offset
 		index = self.index
-		self.stack.append([datatype, title, datalist, offset, index])
+		playing = self.playing
+		self.stack.append([datatype, title, datalist, offset, index, playing])
 
 		if datatype == 'menu':
 			self.choice(idx)
@@ -165,7 +179,7 @@ class Menu:
 			vol_number = datalist[idx]['number']
 			self.datatype = 'songs'
 			vol = luoo.vol(vol_number)
-			self.datalist = vol['song']
+			self.datalist = vol
 			self.title += ' > ' + datalist[idx]['name']
 
 	def choice(self, idx):
@@ -193,13 +207,13 @@ class Menu:
 	def search(self):
 		luoo = self.luoo
 		ui = self.ui
-		self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index])
+		self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index, self.playing])
 		self.index = 0
 		self.offset = 0
 
 		self.datatype = 'songs'
 		vol = ui.search()
-		self.datalist = vol['song']
+		self.datalist = vol
 		self.title = 'vol. ' + vol['number'] + ' ' + vol['title']
 
 
