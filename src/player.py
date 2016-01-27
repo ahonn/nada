@@ -43,10 +43,10 @@ class Player:
 
 	def play(self, datatype, datalist, idx):
 		self.datatype = datatype
-		songs = datalist['song']
-		number = datalist['number']
 
 		if datatype == 'songs':
+			songs = datalist['song']
+			number = datalist['number']
 			if idx == self.idx and songs == self.songs:
 				if self.pause_flag:
 					self.resume()
