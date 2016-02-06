@@ -13,7 +13,8 @@ setup(
 
     install_requires = [
         'requests',
-        'BeautifulSoup4'
+        'BeautifulSoup4',
+        'lxml'
      ],
 
     entry_points = {
