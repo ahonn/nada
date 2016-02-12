@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-落网命令行播放器
+Nada
 '''
 
 from menu import Menu

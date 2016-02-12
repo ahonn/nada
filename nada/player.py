@@ -38,13 +38,17 @@ class Player:
 	def recall(self):
 		self.playing_flag = True
 		item = self.songs[self.idx]
-		self.ui.playinfo(item['name'], item['artist'])
+		try:
+			self.ui.playinfo(item['name'], artist=item['artist'])
+		except Exception, e:
+			self.ui.playinfo(item['name'])
+
 		self.popen_recall(self.recall, item['url'])
 
 	def play(self, datatype, datalist, idx):
 		self.datatype = datatype
 
-		if datatype == 'songs':
+		if datatype == 'songs' or datatype == 'echos':
 			songs = datalist['song']
 			number = datalist['number']
 			if idx == self.idx and songs == self.songs:

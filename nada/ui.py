@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import curses
-from api import Luoo
+from luoo import Luoo
+from echo import Echo
 
 class UI:
 	def __init__(self):
@@ -19,7 +20,7 @@ class UI:
 		curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 		curses.init_pair(5, curses.COLOR_BLUE, curses.COLOR_BLACK)
 
-	def playinfo(self, name, artist, pause=False):
+	def playinfo(self, name, artist=None, pause=False):
 		self.screen.move(1, 1)
 		self.screen.clrtoeol()
 		self.screen.move(2, 1)
@@ -28,11 +29,14 @@ class UI:
 			self.screen.addstr(1, 19, '_ _ z Z Z', curses.color_pair(3))
 		else:
 			self.screen.addstr(1, 19, '♫  ♪ ♫  ♪', curses.color_pair(3))
-		self.screen.addstr(1, 32, name + '  -  ' + artist, curses.color_pair(4))
+		if artist is None:
+			self.screen.addstr(1, 32, name , curses.color_pair(4))
+		else:
+			self.screen.addstr(1, 32, name + '  -  ' + artist, curses.color_pair(4))
 		self.screen.refresh()
 
 	def loading(self):
-		self.screen.addstr(6, 19, '我们，记录独立音乐， Loading...', curses.color_pair(1))
+		self.screen.addstr(6, 19, 'Nada ~ Loading...', curses.color_pair(1))
 		self.screen.refresh()
 
 	def menu(self, datatype, title, datalist, offset, index, step, number, playing):
@@ -43,8 +47,8 @@ class UI:
 		if len(datalist) == 0:
 			self.screen.addstr(8, 19, 'Nothing ...')
 		else:
-			if datatype == 'menu':
-				for i in xrange(offset, len(datalist)):
+			if datatype == 'menu' or datatype == 'luoo' or datatype == 'echo':
+				for i in xrange(offset, min(len(datalist), offset+step)):
 					if i == index:
 						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
 					else:
@@ -69,6 +73,18 @@ class UI:
 					else:
 						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + song[i]['name'] + '  -  ' + song[i]['artist'])[:48])
 
+			elif datatype == 'echos':
+				song = datalist['song']
+				for i in xrange(offset, min(len(song), offset+step)):
+					if i == index and i == playing and number == datalist['number']:
+						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + song[i]['name'])[:51], curses.color_pair(2))
+					elif i == playing and number == datalist['number']:
+						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + song[i]['name'])[:50], curses.color_pair(5))
+					elif i == index:
+						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + song[i]['name'])[:51], curses.color_pair(2))
+					else:
+						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + song[i]['name'])[:48])
+
 			elif datatype == 'vols':
 				for i in xrange(offset, min(len(datalist), offset+step)):
 					if i == index:
@@ -77,8 +93,10 @@ class UI:
 						self.screen.addstr(i - offset + 8, 19, datalist[i]['name'])
 
 			elif datatype == 'about':
-				self.screen.addstr(8, 15, 'LuooMusic 基于 Python，所有音乐来自落网（www.luoo.net）')
-				self.screen.addstr(10, 60, 'By Ahonn ')
+				self.screen.addstr(8, 15, 'The mind is like a serpent, ')
+				self.screen.addstr(9, 15, 'forgetting all its unsteadiness by hearing the nada,')
+				self.screen.addstr(10, 15, 'it does not run away anywhere.')
+				self.screen.addstr(12, 60, 'By Ahonn ')
 
 		self.screen.refresh()
 

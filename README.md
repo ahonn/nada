@@ -1,20 +1,18 @@
-## LuooMusic 
+## Nada
 
-落网音乐命令行播放器。
+命令行音乐播放器, 目前包括 luoo落网, echo 回声. 
 
-基于 python ，需要使用 `BeautifulSoup`, `requests` 模块。
+The mind is like a serpent, forgetting all its unsteadiness by hearing the nada, it does not run away anywhere.
+
+基于 python2.7 , 需要 `BeautifulSoup`, `requests` 模块. 需要安装 mpg123 ( Linux 系统自带, OS X 需要安装).
 
 Just for fun～
-
-![LuooMusic 期刊列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-1%402x.png?imageView/2/w/500/q/100)
-
-![LuooMusic 播放列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-0%402x.png?imageView/2/w/500/q/100)
 
 ##### 安装：
 `$ sudo python setup.py install`
 
 ##### 运行
-`$ luoo`
+`$ nada`
 
 ##### 基本操作:
 

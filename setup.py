@@ -5,8 +5,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name = 'LuooMusic',
-    version = '0.1',
+    name = 'Nada',
+    version = '0.2',
     packages = find_packages(),
 
     include_package_data = True,
@@ -19,12 +19,12 @@ setup(
 
     entry_points = {
         'console_scripts' : [
-            'luoo = src:start'
+            'nada = nada:start'
         ],
     },
 
     author = 'ahonn',
     author_email = 'ahonn95@outlook.com',
-    url = 'https://github.com/ahonn/LuooMusic',
+    url = 'https://github.com/ahonn/Nada',
     zip_safe = False,
 )

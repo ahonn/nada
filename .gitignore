@@ -1,4 +1,5 @@
 src/*.py[cod]
 build/
 dist/
-LuooMusic.egg-info/
+Nada.egg-info/
+.DS_Store

@@ -13,7 +13,8 @@ import json
 import time
 import webbrowser
 
-from api import Luoo
+from luoo import Luoo
+from echo import Echo
 from player import Player
 from ui import UI
 
@@ -28,20 +29,24 @@ class Menu:
         reload(sys)
         sys.setdefaultencoding('UTF-8')
         self.datatype = 'menu'
-        self.title = '落网'
-        self.datalist = ['最新期刊', '分类期刊', '搜索期刊', '关于']
+        self.title = 'Nada'
+        self.datalist = ['luoo落网', 'echo回声', '关于']
+
         self.offset = 0
         self.index = 0
         self.playing = -1
         self.number = -1
         self.presentsong = []
+        self.step = 10
+        self.stack = []
+        
         self.player = Player()
         self.ui = UI()
         self.luoo = Luoo()
+        self.echo = Echo()
         self.screen = curses.initscr()
         self.screen.keypad(1)
-        self.step = 10
-        self.stack = []
+
 
     def start(self):
         self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.number,
@@ -64,7 +69,7 @@ class Menu:
                 break
 
             elif key == ord('k'):
-                if datatype == 'songs':
+                if datatype == 'songs' or datatype == 'echos':
                     length = len(datalist['song'])
                 else:
                     length = len(datalist)
@@ -78,7 +83,7 @@ class Menu:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx - 1)
 
             elif key == ord('j'):
-                if datatype == 'songs':
+                if datatype == 'songs' or datatype == 'echos':
                     length = len(datalist['song'])
                 else:
                     length = len(datalist)
@@ -159,10 +164,13 @@ class Menu:
         curses.endwin()
 
     def dispatch(self, idx):
-        luoo = self.luoo
         datatype = self.datatype
         title = self.title
         datalist = self.datalist
+
+        luoo = self.luoo
+        echo = self.echo
+
         offset = self.offset
         index = self.index
         playing = self.playing
@@ -170,6 +178,12 @@ class Menu:
 
         if datatype == 'menu':
             self.choice(idx)
+
+        elif datatype == 'luoo':
+            self.luooChoice(idx)
+
+        elif datatype == 'echo':
+            self.echoChoice(idx)
 
         elif datatype == 'vtype':
             type_id = datalist[idx]["id"]
@@ -186,6 +200,24 @@ class Menu:
             self.title += ' > ' + datalist[idx]['name']
 
     def choice(self, idx):
+        if idx == 0:
+            self.datalist = ['最新期刊', '分类期刊', '搜索期刊']
+            self.datatype = 'luoo'
+            self.title += ' > luoo落网'
+
+        elif idx == 1:
+            self.datalist = ['今日推荐', '本日热门', '本周热门', '本月热门']
+            self.datatype = 'echo'
+            self.title += ' > echo回声'
+
+        elif idx == 2:
+            self.datatype = 'about'
+            self.title += ' > 关于'
+
+        self.offset = 0
+        self.index = 0
+
+    def luooChoice(self, idx):
         luoo = self.luoo
         if idx == 0:
             self.datalist = luoo.music()
@@ -200,9 +232,30 @@ class Menu:
         elif idx == 2:
             self.search()
 
+        self.offset = 0
+        self.index = 0
+
+    def echoChoice(self, idx):
+        echo = self.echo
+        if idx == 0:
+            self.datalist = {'number' : 0 , 'song' : echo.recommend(1)}
+            self.datatype = 'echos'
+            self.title += ' > 今日推荐'
+
+        elif idx == 1:
+            self.datalist = {'number' : 1 , 'song' : echo.daily()}
+            self.datatype = 'echos'
+            self.title += ' > 本日热门'
+
+        elif idx == 2:
+            self.datalist = {'number' : 2 , 'song' : echo.weekly()}
+            self.datatype = 'echos'
+            self.title += ' > 本周热门'
+
         elif idx == 3:
-            self.datatype = 'about'
-            self.title += ' > 关于'
+            self.datalist = {'number' : 3 , 'song' : echo.monthly()}
+            self.datatype = 'echos'
+            self.title += ' > 本月热门'
 
         self.offset = 0
         self.index = 0
@@ -217,4 +270,9 @@ class Menu:
         self.datatype = 'songs'
         vol = ui.search()
         self.datalist = vol
-        self.title = 'vol. ' + vol['number'] + ' ' + vol['title']
+        self.title += ' > 落网 > vol. ' + vol['number'] + ' ' + vol['title']
+
+
+
+
+

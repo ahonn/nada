@@ -59,7 +59,7 @@ class Luoo:
 		for x in xrange(1, len(items)):
 			vtype = {
 				"name" : items[x].text,
-				"id" : items[x]["href"].split('/')[-1]
+				"number" : items[x]["href"].split('/')[-1]
 			}
 			typelist.append(vtype)
 		return typelist
