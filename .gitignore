@@ -2,3 +2,4 @@ src/*.py[cod]
 build/
 dist/
 LuooMusic.egg-info/
+.idea/
