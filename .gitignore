@@ -1,4 +1,4 @@
-src/*.py[cod]
+*/*.py[cod]
 build/
 dist/
 Nada.egg-info/
