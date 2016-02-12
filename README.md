@@ -6,9 +6,9 @@
 
 Just for fun～
 
-![LuooMusic 期刊列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-1%402x.png)
+![LuooMusic 期刊列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-1%402x.png?imageView/2/w/500/q/100)
 
-![LuooMusic 播放列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-0%402x.png)
+![LuooMusic 播放列表](http://7xqvel.com1.z0.glb.clouddn.com/QQ20160212-0%402x.png?imageView/2/w/500/q/100)
 
 ##### 安装：
 `$ sudo python setup.py install`
