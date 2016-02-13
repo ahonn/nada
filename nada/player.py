@@ -90,13 +90,19 @@ class Player:
 		self.pause_flag = True
 		os.kill(self.popen_handler.pid, signal.SIGSTOP)
 		item = self.songs[self.idx]
-		self.ui.playinfo(item['name'], item['artist'], pause=True)
+		try:
+			self.ui.playinfo(item['name'], artist=item['artist'], pause=True)
+		except Exception, e:
+			self.ui.playinfo(item['name'], pause=True)
 
 	def resume(self):
 		self.pause_flag = False
 		os.kill(self.popen_handler.pid, signal.SIGCONT)
 		item = self.songs[self.idx]
-		self.ui.playinfo(item['name'], item['artist'])
+		try:
+			self.ui.playinfo(item['name'], artist=item['artist'])
+		except Exception, e:
+			self.ui.playinfo(item['name'])
 
 	def next(self):
 		self.stop()
