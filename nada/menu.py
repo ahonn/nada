@@ -97,7 +97,7 @@ class Menu:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx + 1)
 
             elif key == ord('l'):
-                if self.datatype == 'songs' or self.datatype == 'about':
+                if self.datatype == 'songs' or self.datatype == 'about' or self.datatype == 'echos':
                     continue
                 self.ui.loading()
                 self.dispatch(idx)
@@ -185,19 +185,23 @@ class Menu:
         elif datatype == 'echo':
             self.echoChoice(idx)
 
-        elif datatype == 'vtype':
-            type_id = datalist[idx]["id"]
-            type_name = datalist[idx]["name"]
-            self.datatype = 'vols'
-            self.datalist = luoo.music(type_id)
-            self.title += ' > ' + type_name
+        elif datatype == 'echoHot':
+            self.echoHot(idx)
 
-        elif datatype == 'vols':
-            vol_number = datalist[idx]['number']
-            self.datatype = 'songs'
-            vol = luoo.vol(vol_number)
-            self.datalist = vol
-            self.title += ' > ' + datalist[idx]['name']
+        elif datatype == 'luooType':
+            self.luooType(idx)
+
+        elif datatype == 'echoType':
+            self.echoType(idx)
+
+        elif datatype == 'luooVols':
+            self.luooVols(idx)
+
+        elif datatype == 'echoVols':
+            self.echoVols(idx)
+
+        self.offset = 0
+        self.index = 0
 
     def choice(self, idx):
         if idx == 0:
@@ -206,7 +210,7 @@ class Menu:
             self.title += ' > luoo落网'
 
         elif idx == 1:
-            self.datalist = ['今日推荐', '本日热门', '本周热门', '本月热门']
+            self.datalist = ['每日推荐', '热门推荐', '频道分类']
             self.datatype = 'echo'
             self.title += ' > echo回声'
 
@@ -214,19 +218,15 @@ class Menu:
             self.datatype = 'about'
             self.title += ' > 关于'
 
-        self.offset = 0
-        self.index = 0
-
     def luooChoice(self, idx):
-        luoo = self.luoo
         if idx == 0:
-            self.datalist = luoo.music()
-            self.datatype = 'vols'
+            self.datalist = self.luoo.music()
+            self.datatype = 'luooVols'
             self.title += ' > 最新期刊'
 
         elif idx == 1:
-            self.datalist = luoo.typelist()
-            self.datatype = 'vtype'
+            self.datalist = self.luoo.typelist()
+            self.datatype = 'luooType'
             self.title += ' > 分类期刊'
 
         elif idx == 2:
@@ -235,31 +235,70 @@ class Menu:
         self.offset = 0
         self.index = 0
 
+    def luooType(self, idx):
+        self.datatype = 'vols'
+        type_number = datalist[idx]["number"]
+        self.title += ' > ' + datalist[idx]["name"]
+        self.datalist = self.luoo.music(type_number)
+
+    def luooVols(self, idx):
+        vol_number = datalist[idx]['number']
+        self.datatype = 'songs'
+        self.datalist = self.luoo.vol(vol_number)
+        self.title += ' > ' + datalist[idx]['name']
+
     def echoChoice(self, idx):
-        echo = self.echo
         if idx == 0:
-            self.datalist = {'number' : 0 , 'song' : echo.recommend(1)}
+            self.datalist = {'number' : 0 , 'song' : self.echo.recommend()}
             self.datatype = 'echos'
-            self.title += ' > 今日推荐'
+            self.title += ' > 每日推荐'
 
         elif idx == 1:
-            self.datalist = {'number' : 1 , 'song' : echo.daily()}
+            self.datalist = ['本日热门', '本周热门', '本月热门']
+            self.datatype = 'echoHot'
+            self.title += ' > 热门推荐'
+
+        elif idx == 2:
+            self.datalist = ['全部频道', '最热频道', '最新频道']
+            self.datatype = 'echoType'
+            self.title += ' > 频道分类'
+
+    def echoHot(self, idx):
+        if idx == 0:
+            self.datalist = {'number' : 1 , 'song' : self.echo.daily()}
             self.datatype = 'echos'
             self.title += ' > 本日热门'
 
         elif idx == 2:
-            self.datalist = {'number' : 2 , 'song' : echo.weekly()}
+            self.datalist = {'number' : 2 , 'song' : self.echo.weekly()}
             self.datatype = 'echos'
             self.title += ' > 本周热门'
 
         elif idx == 3:
-            self.datalist = {'number' : 3 , 'song' : echo.monthly()}
+            self.datalist = {'number' : 3 , 'song' : self.echo.monthly()}
             self.datatype = 'echos'
             self.title += ' > 本月热门'
 
-        self.offset = 0
-        self.index = 0
+    def echoType(self, idx):
+        if idx == 0:
+            pass
 
+        elif idx == 1:
+            self.datatype = 'echoVols'
+            self.title += ' > 最热频道'
+            self.datalist = self.echo.hot_type()
+
+        elif idx == 2:
+            self.datatype = 'echoVols'
+            self.title += ' > 最新频道'
+            self.datalist = self.echo.new_type()
+
+    def echoVols(self, idx):
+        self.datatype = 'echos'
+        self.title += ' > ' + self.datalist[idx]['name']
+        vid =  self.datalist[idx]['id']
+        self.datalist = {'number' : vid, 'song' : self.echo.vol(vid)}
+        
     def search(self):
         luoo = self.luoo
         ui = self.ui

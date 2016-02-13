@@ -36,7 +36,7 @@ class UI:
 		self.screen.refresh()
 
 	def loading(self):
-		self.screen.addstr(6, 19, 'Nada ~ Loading...', curses.color_pair(1))
+		self.screen.addstr(6, 19, '♫  ♪ Nada ♫  ♪ Loading...', curses.color_pair(1))
 		self.screen.refresh()
 
 	def menu(self, datatype, title, datalist, offset, index, step, number, playing):
@@ -47,19 +47,26 @@ class UI:
 		if len(datalist) == 0:
 			self.screen.addstr(8, 19, 'Nothing ...')
 		else:
-			if datatype == 'menu' or datatype == 'luoo' or datatype == 'echo':
+			if datatype == 'menu':
 				for i in xrange(offset, min(len(datalist), offset+step)):
 					if i == index:
 						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
 					else:
 						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i])
 
-			elif datatype == 'vtype':
+			elif datatype == 'luooType':
 				for i in xrange(offset, min(len(datalist), offset+step)):
 					if i == index:
 						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i]["name"], curses.color_pair(2))
 					else:
 						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i]["name"])
+
+			elif datatype == 'echoType':
+				for i in xrange(offset, min(len(datalist), offset+step)):
+					if i == index:
+						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
+					else:
+						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i])
 						
 			elif datatype == 'songs':
 				song = datalist['song']
@@ -77,15 +84,15 @@ class UI:
 				song = datalist['song']
 				for i in xrange(offset, min(len(song), offset+step)):
 					if i == index and i == playing and number == datalist['number']:
-						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + song[i]['name'])[:51], curses.color_pair(2))
+						self.screen.addstr(i - offset + 8, 16, ('>> ' + str(i) + '. ' + song[i]['name'])[:31], curses.color_pair(2))
 					elif i == playing and number == datalist['number']:
-						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + song[i]['name'])[:50], curses.color_pair(5))
+						self.screen.addstr(i - offset + 8, 17, ('> ' + str(i) + '. ' + song[i]['name'])[:30], curses.color_pair(5))
 					elif i == index:
-						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + song[i]['name'])[:51], curses.color_pair(2))
+						self.screen.addstr(i - offset + 8, 16, ('-> ' + str(i) + '. ' + song[i]['name'])[:31], curses.color_pair(2))
 					else:
-						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + song[i]['name'])[:48])
+						self.screen.addstr(i - offset + 8, 19, (str(i) + '. ' + song[i]['name'])[:28])
 
-			elif datatype == 'vols':
+			elif datatype == 'luooVols' or datatype == 'echoVols':
 				for i in xrange(offset, min(len(datalist), offset+step)):
 					if i == index:
 						self.screen.addstr(i - offset + 8, 16, '-> ' + datalist[i]['name'], curses.color_pair(2))
@@ -97,6 +104,13 @@ class UI:
 				self.screen.addstr(9, 15, 'forgetting all its unsteadiness by hearing the nada,')
 				self.screen.addstr(10, 15, 'it does not run away anywhere.')
 				self.screen.addstr(12, 60, 'By Ahonn ')
+
+			else:
+				for i in xrange(offset, min(len(datalist), offset+step)):
+					if i == index:
+						self.screen.addstr(i - offset + 8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
+					else:
+						self.screen.addstr(i - offset + 8, 19, str(i) + '. ' + datalist[i])
 
 		self.screen.refresh()
 
