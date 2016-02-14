@@ -226,8 +226,8 @@ class Menu:
             try:
                 self.model = self.luoo.vol(vol_number)
                 self.title += ' > 搜索期刊 > Vol.' + self.model['number'] + ' ' + self.model['title']
-                self.view  = 'songs'
-                self.ctrl  = 'songs' 
+                self.view = 'songs'
+                self.ctrl = 'songs'
             except Exception, e:
                 self.model = []
 

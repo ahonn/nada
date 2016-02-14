@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import curses
-from api import Luoo, Echo
 
 
 class UI:
@@ -93,7 +92,7 @@ class UI:
                 self.screen.addstr(12, 60, 'By Ahonn ')
 
     def search(self, string):
-        self.screen.move(4,1)
+        self.screen.move(4, 1)
         self.screen.clrtobot()
         self.screen.addstr(5, 19, string, curses.color_pair(1))
         self.screen.refresh()

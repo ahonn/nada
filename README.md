@@ -34,6 +34,11 @@ space | 播放/暂停
 - 添加信息记录
 
 ## Change Log
+
+#### 2016.02.14 
+- [Change] 重写 menu.py, ui.py, api.py
+- [Update] 调整 UI  
+
 #### 2016.02.13 
 - [Add] 添加 echo API, 用于获取分类频道, 及频道中的曲目信息
 - [Add] 增加 echo 中的频道分类, 完成最热频道及最新频道
