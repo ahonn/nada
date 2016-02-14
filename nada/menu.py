@@ -1,21 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-落网 Menu
-"""
-
 import curses
 import locale
 import sys
-import os
-import json
 import time
-import webbrowser
 
-from luoo import Luoo
-from echo import Echo
-from player import Player
+from api import Luoo, Echo
+# from player import Player
 from ui import UI
 
 locale.setlocale(locale.LC_ALL, "")
@@ -28,40 +20,44 @@ class Menu:
     def __init__(self):
         reload(sys)
         sys.setdefaultencoding('UTF-8')
-        self.datatype = 'menu'
+
         self.title = 'Nada'
-        self.datalist = ['luoo落网', 'echo回声', '关于']
+        self.model = ['luoo 落网', 'echo 回声', '关于']
+        self.view = 'menu'
+        self.ctrl = 'menu'
 
         self.offset = 0
         self.index = 0
-        self.playing = -1
-        self.number = -1
-        self.presentsong = []
         self.step = 10
+        self.play_id = -1
+        self.play_vol = -1
+
+        self.present = []
         self.stack = []
-        
-        self.player = Player()
+
+        self.player = None
         self.ui = UI()
         self.luoo = Luoo()
         self.echo = Echo()
+
         self.screen = curses.initscr()
         self.screen.keypad(1)
 
-
     def start(self):
-        self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.number,
-                     self.playing)
-        self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index, self.playing])
+        self.ui.build(self.title, self.model, self.view, self.offset, self.index, self.step, self.play_vol,
+                      self.play_id)
+        self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
 
         while True:
-            datatype = self.datatype
             title = self.title
-            datalist = self.datalist
+            model = self.model
+            view = self.view
+            ctrl = self.ctrl
+
             offset = self.offset
-            idx = index = self.index
-            playing = self.playing
+            index = idx = self.index
             step = self.step
-            stack = self.stack
+
             key = self.screen.getch()
             self.ui.screen.refresh()
 
@@ -69,11 +65,10 @@ class Menu:
                 break
 
             elif key == ord('k'):
-                if datatype == 'songs' or datatype == 'echos':
-                    length = len(datalist['song'])
+                if view == 'songs':
+                    length = len(model['songs'])
                 else:
-                    length = len(datalist)
-
+                    length = len(model)
                 if idx == offset:
                     if offset == 0:
                         continue
@@ -83,11 +78,10 @@ class Menu:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx - 1)
 
             elif key == ord('j'):
-                if datatype == 'songs' or datatype == 'echos':
-                    length = len(datalist['song'])
+                if view == 'songs':
+                    length = len(model['songs'])
                 else:
-                    length = len(datalist)
-
+                    length = len(model)
                 if idx == min(length, offset + step) - 1:
                     if offset + step >= length:
                         continue
@@ -96,222 +90,212 @@ class Menu:
                 else:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx + 1)
 
+
             elif key == ord('l'):
-                if self.datatype == 'songs' or self.datatype == 'about' or self.datatype == 'echos':
+                if self.view == 'songs':
                     continue
                 self.ui.loading()
-                self.dispatch(idx)
+                self.control(idx)
                 self.index = 0
                 self.offset = 0
-                self.playing = -1
 
             elif key == ord('h'):
                 if len(self.stack) == 1:
                     continue
-                up = stack.pop()
-                self.datatype = up[0]
-                self.title = up[1]
-                self.datalist = up[2]
-                self.offset = up[3]
-                self.index = up[4]
-                self.playing = up[5]
-
-            elif key == ord('f'):
-                self.search()
+                up = self.stack.pop()
+                self.title = up[0]
+                self.model = up[1]
+                self.view = up[2]
+                self.ctrl = up[3]
+                self.offset = up[4]
+                self.index = up[5]
 
             elif key == ord(' '):
-                self.presentsongs = ['songs', title, datalist, offset, index, playing]
-                self.player.play(datatype, datalist, idx)
+                if view == 'songs':
+                    self.present = [title, model, view, ctrl, offset, index, self.play_vol, self.play_id]
+                self.player.play(view, model, idx)
 
             elif key == ord(']'):
                 self.player.next()
-                if datatype == 'songs':
+                if view == 'songs':
                     self.index = self.player.idx
                 time.sleep(0.1)
 
             elif key == ord('['):
                 self.player.prev()
-                if datatype == 'songs':
+                if view == 'songs':
                     self.index = self.player.idx
                 time.sleep(0.1)
 
             elif key == ord('p'):
-                if len(self.presentsongs) == 0:
+                if len(self.present) == 0:
                     continue
-                self.stack.append([datatype, title, datalist, offset, index, playing])
-                self.datatype = self.presentsongs[0]
-                self.title = self.presentsongs[1]
-                self.datalist = self.presentsongs[2]
-                self.offset = self.presentsongs[3]
-                self.index = self.presentsongs[4]
-                self.playing = self.presentsongs[5]
+                self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
+
+                self.title = self.present[0]
+                self.model = self.present[1]
+                self.view = self.present[2]
+                self.ctrl = self.present[3]
+                self.offset = self.present[4]
+                self.index = self.present[5]
 
             elif key == ord('m'):
-                if datatype != 'menu':
-                    self.stack.append([datatype, title, datalist, offset, index, playing])
-                    self.datatype = self.stack[0][0]
-                    self.title = self.stack[0][1]
-                    self.datalist = self.stack[0][2]
-                    self.offset = 0
-                    self.index = 0
+                if view != 'menu':
+                    self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
 
-            self.playing = self.player.idx
-            self.number = self.player.number
-            self.ui.menu(self.datatype, self.title, self.datalist, self.offset, self.index, self.step, self.number,
-                         self.playing)
+                    self.title = self.stack[0][0]
+                    self.model = self.stack[0][1]
+                    self.view = self.stack[0][2]
+                    self.ctrl = self.stack[0][3]
+                    self.offset = self.stack[0][4]
+                    self.index = self.stack[0][5]
+
+            # self.play_vol = self.player.vol
+            # self.play_id = self.player.idx
+            self.ui.build(self.title, self.model, self.view, self.offset, self.index, self.step, self.play_vol,
+                          self.play_id)
+            self.ui.screen.refresh()
 
         self.player.stop()
         curses.endwin()
 
-    def dispatch(self, idx):
-        datatype = self.datatype
-        title = self.title
-        datalist = self.datalist
+    def control(self, idx):
+        self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
 
-        luoo = self.luoo
-        echo = self.echo
+        ctrl = self.ctrl
+        if ctrl == 'menu':
+            self.menu(idx)
 
-        offset = self.offset
-        index = self.index
-        playing = self.playing
-        self.stack.append([datatype, title, datalist, offset, index, playing])
+        elif ctrl == 'luoo':
+            self.luooMenu(idx)
 
-        if datatype == 'menu':
-            self.choice(idx)
+        elif ctrl == 'luoo_vols':
+            self.luoo_vols(idx)
 
-        elif datatype == 'luoo':
-            self.luooChoice(idx)
+        elif ctrl == 'luoo_vtype':
+            self.luoo_vtype(idx)
 
-        elif datatype == 'echo':
-            self.echoChoice(idx)
+        elif ctrl == 'echo':
+            self.echoMenu(idx)
 
-        elif datatype == 'echoHot':
-            self.echoHot(idx)
+        elif ctrl == 'echo_hot':
+            self.echo_hot(idx)
 
-        elif datatype == 'luooType':
-            self.luooType(idx)
+        elif ctrl == 'echo_tag':
+            self.echo_tag(idx)
 
-        elif datatype == 'echoType':
-            self.echoType(idx)
-
-        elif datatype == 'luooVols':
-            self.luooVols(idx)
-
-        elif datatype == 'echoVols':
-            self.echoVols(idx)
+        elif ctrl == 'echo_vol':
+            self.echo_vol(idx)
 
         self.offset = 0
         self.index = 0
 
-    def choice(self, idx):
+    def menu(self, idx):
         if idx == 0:
-            self.datalist = ['最新期刊', '分类期刊', '搜索期刊']
-            self.datatype = 'luoo'
-            self.title += ' > luoo落网'
+            self.title += ' > luoo 落网'
+            self.model = ['最新期刊', '分类期刊', '搜索期刊']
+            self.view = 'list'
+            self.ctrl = 'luoo'
 
         elif idx == 1:
-            self.datalist = ['每日推荐', '热门推荐', '频道分类']
-            self.datatype = 'echo'
-            self.title += ' > echo回声'
+            self.title += ' > echo 落网'
+            self.model = ['每日推荐', '热门推荐', '频道分类']
+            self.view = 'list'
+            self.ctrl = 'echo'
 
         elif idx == 2:
-            self.datatype = 'about'
-            self.title += ' > 关于'
+            self.title += ' > 关于 Nada'
+            self.view = 'about'
+            self.ctrl = 'about'
 
-    def luooChoice(self, idx):
+    def luooMenu(self, idx):
         if idx == 0:
-            self.datalist = self.luoo.music()
-            self.datatype = 'luooVols'
             self.title += ' > 最新期刊'
+            self.model = self.luoo.new()
+            self.view = 'vols'
+            self.ctrl = 'luoo_vols'
 
         elif idx == 1:
-            self.datalist = self.luoo.typelist()
-            self.datatype = 'luooType'
             self.title += ' > 分类期刊'
+            self.model = self.luoo.vtype()
+            self.view = 'vols'
+            self.ctrl = 'luoo_vtype'
 
         elif idx == 2:
-            self.search()
+            vol_number = self.ui.search('搜索期刊: ')
+            try:
+                self.model = self.luoo.vol(vol_number)
+                self.title += ' > 搜索期刊 > Vol.' + self.model['number'] + ' ' + self.model['title']
+                self.view  = 'songs'
+                self.ctrl  = 'songs' 
+            except Exception, e:
+                self.model = []
 
-        self.offset = 0
-        self.index = 0
+    def luoo_vols(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        vol_number = self.model[idx]['number']
+        self.model = self.luoo.vol(vol_number)
+        self.view = 'songs'
+        self.ctrl = 'songs'
 
-    def luooType(self, idx):
-        self.datatype = 'vols'
-        type_number = datalist[idx]["number"]
-        self.title += ' > ' + datalist[idx]["name"]
-        self.datalist = self.luoo.music(type_number)
+    def luoo_vtype(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        type_number = self.model[idx]['number']
+        self.model = self.luoo.vols(type_number)
+        self.view = 'vols'
+        self.ctrl = 'luoo_vols'
 
-    def luooVols(self, idx):
-        vol_number = datalist[idx]['number']
-        self.datatype = 'songs'
-        self.datalist = self.luoo.vol(vol_number)
-        self.title += ' > ' + datalist[idx]['name']
-
-    def echoChoice(self, idx):
+    def echoMenu(self, idx):
         if idx == 0:
-            self.datalist = {'number' : 0 , 'song' : self.echo.recommend()}
-            self.datatype = 'echos'
             self.title += ' > 每日推荐'
+            self.model = self.echo.new()
+            self.view = 'songs'
+            self.ctrl = 'songs'
 
         elif idx == 1:
-            self.datalist = ['本日热门', '本周热门', '本月热门']
-            self.datatype = 'echoHot'
             self.title += ' > 热门推荐'
+            self.model = ['本日热门', '本周热门', '本月热门']
+            self.view = 'list'
+            self.ctrl = 'echo_hot'
 
         elif idx == 2:
-            self.datalist = ['全部频道', '最热频道', '最新频道']
-            self.datatype = 'echoType'
             self.title += ' > 频道分类'
+            self.model = self.echo.all_tag()
+            self.view = 'vols'
+            self.ctrl = 'echo_tag'
 
-    def echoHot(self, idx):
+    def echo_hot(self, idx):
         if idx == 0:
-            self.datalist = {'number' : 1 , 'song' : self.echo.daily()}
-            self.datatype = 'echos'
             self.title += ' > 本日热门'
-
-        elif idx == 2:
-            self.datalist = {'number' : 2 , 'song' : self.echo.weekly()}
-            self.datatype = 'echos'
-            self.title += ' > 本周热门'
-
-        elif idx == 3:
-            self.datalist = {'number' : 3 , 'song' : self.echo.monthly()}
-            self.datatype = 'echos'
-            self.title += ' > 本月热门'
-
-    def echoType(self, idx):
-        if idx == 0:
-            pass
+            self.model = self.echo.daily_hot()
 
         elif idx == 1:
-            self.datatype = 'echoVols'
-            self.title += ' > 最热频道'
-            self.datalist = self.echo.hot_type()
+            self.title += ' > 本周热门'
+            self.model = self.echo.weekly_hot()
 
         elif idx == 2:
-            self.datatype = 'echoVols'
-            self.title += ' > 最新频道'
-            self.datalist = self.echo.new_type()
+            self.title += ' > 本月热门'
+            self.model = self.echo.monthly_hot()
 
-    def echoVols(self, idx):
-        self.datatype = 'echos'
-        self.title += ' > ' + self.datalist[idx]['name']
-        vid =  self.datalist[idx]['id']
-        self.datalist = {'number' : vid, 'song' : self.echo.vol(vid)}
-        
-    def search(self):
-        luoo = self.luoo
-        ui = self.ui
-        self.stack.append([self.datatype, self.title, self.datalist, self.offset, self.index, self.playing])
-        self.index = 0
-        self.offset = 0
+        self.view = 'songs'
+        self.ctrl = 'songs'
 
-        self.datatype = 'songs'
-        vol = ui.search()
-        self.datalist = vol
-        self.title += ' > 落网 > vol. ' + vol['number'] + ' ' + vol['title']
+    def echo_tag(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        if idx == 0:
+            self.model = self.echo.new_vols()
+        elif idx == 1:
+            self.model = self.echo.hot_vols()
+        else:
+            tag_number = self.model[idx]['number']
+            self.model = self.echo.tag_vols(tag_number)
 
+        self.view = 'vols'
+        self.ctrl = 'echo_vol'
 
-
-
-
+    def echo_vol(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        vol_number = self.model[idx]['number']
+        self.model = self.echo.vol(vol_number)
+        self.view = 'songs'
+        self.ctrl = 'songs'
