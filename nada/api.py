@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 import requests
 from bs4 import BeautifulSoup
 
@@ -38,7 +36,7 @@ class Luoo:
         soup = self.parser(url)
 
         title = soup.find("span", class_="vol-title").text
-        vol = {'number': number, 'title' : title, 'songs': []}
+        vol = {'number': number, 'title': title, 'songs': []}
 
         items = soup.find_all("li", class_="track-item")
         for i, item in enumerate(items):

@@ -7,7 +7,7 @@ import sys
 import time
 
 from api import Luoo, Echo
-# from player import Player
+from player import Player
 from ui import UI
 
 locale.setlocale(locale.LC_ALL, "")
@@ -35,7 +35,7 @@ class Menu:
         self.present = []
         self.stack = []
 
-        self.player = None
+        self.player = Player()
         self.ui = UI()
         self.luoo = Luoo()
         self.echo = Echo()
@@ -113,18 +113,18 @@ class Menu:
             elif key == ord(' '):
                 if view == 'songs':
                     self.present = [title, model, view, ctrl, offset, index, self.play_vol, self.play_id]
-                self.player.play(view, model, idx)
+                self.player.play_song(view, model, idx)
 
             elif key == ord(']'):
-                self.player.next()
+                self.player.next_song()
                 if view == 'songs':
-                    self.index = self.player.idx
+                    self.index = self.player.play_id
                 time.sleep(0.1)
 
             elif key == ord('['):
-                self.player.prev()
+                self.player.prev_song()
                 if view == 'songs':
-                    self.index = self.player.idx
+                    self.index = self.player.play_id
                 time.sleep(0.1)
 
             elif key == ord('p'):
@@ -150,8 +150,8 @@ class Menu:
                     self.offset = self.stack[0][4]
                     self.index = self.stack[0][5]
 
-            # self.play_vol = self.player.vol
-            # self.play_id = self.player.idx
+            self.play_vol = self.player.play_vol
+            self.play_id = self.player.play_id
             self.ui.build(self.title, self.model, self.view, self.offset, self.index, self.step, self.play_vol,
                           self.play_id)
             self.ui.screen.refresh()

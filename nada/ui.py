@@ -24,10 +24,10 @@ class UI:
         self.screen.move(2, 1)
         self.screen.clrtoeol()
         if pause:
-            self.screen.addstr(1, 10, '_ _ z Z Z', curses.color_pair(3))
+            self.screen.addstr(2, 10, '_ _ z Z Z', curses.color_pair(3))
         else:
-            self.screen.addstr(1, 10, '♫  ♪ ♫  ♪', curses.color_pair(3))
-        self.screen.addstr(1, 32, name, curses.color_pair(4))
+            self.screen.addstr(2, 10, '♩  ♪  ♫  ♬', curses.color_pair(3))
+        self.screen.addstr(2, 24, name, curses.color_pair(4))
         self.screen.refresh()
 
     def loading(self):
@@ -37,7 +37,7 @@ class UI:
     def build(self, title, model, view, offset, index, step, play_vol, play_id):
         self.screen.move(4, 1)
         self.screen.clrtobot()
-        self.screen.addstr(4, 10, title, curses.color_pair(1))
+        self.screen.addstr(5, 10, title, curses.color_pair(1))
 
         if view == 'songs':
             model_len = len(model['songs'])
@@ -72,13 +72,12 @@ class UI:
                 vol_number = model['number']
                 songs = model['songs']
                 for i in xrange(offset, min(len(songs), offset + step)):
-                    if play_vol == vol_number:
-                        if i == index and i == play_id:
-                            self.screen.addstr(i - offset + 8, 7, '>> ' + str(i) + '. ' + songs[i]['name'],
-                                               curses.color_pair(2))
-                        elif i == play_id:
-                            self.screen.addstr(i - offset + 8, 17, '> ' + str(i) + '. ' + songs[i]['name'],
-                                               curses.color_pair(5))
+                    if i == index and i == play_id and play_vol == vol_number:
+                        self.screen.addstr(i - offset + 8, 7, '>> ' + str(i) + '. ' + songs[i]['name'],
+                                           curses.color_pair(2))
+                    elif i == play_id and play_vol == vol_number:
+                        self.screen.addstr(i - offset + 8, 8, '> ' + str(i) + '. ' + songs[i]['name'],
+                                           curses.color_pair(5))
                     elif i == index:
                         self.screen.addstr(i - offset + 8, 7, '-> ' + str(i) + '. ' + songs[i]['name'],
                                            curses.color_pair(2))
