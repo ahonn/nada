@@ -198,7 +198,7 @@ class Menu:
             self.ctrl = 'luoo'
 
         elif idx == 1:
-            self.title += ' > echo 落网'
+            self.title += ' > echo 回声'
             self.model = ['每日推荐', '热门推荐', '频道分类']
             self.view = 'list'
             self.ctrl = 'echo'
