@@ -127,12 +127,20 @@ class Menu:
                 self.player.next_song()
                 if view == 'songs':
                     self.index = self.player.play_id
+                    if idx == min(length, offset + step) - 1:
+                        if offset + step >= length:
+                            continue
+                        self.offset += step
                 time.sleep(0.1)
 
             elif key == ord('['):
                 self.player.prev_song()
                 if view == 'songs':
                     self.index = self.player.play_id
+                    if idx == offset:
+                        if offset == 0:
+                            continue
+                        self.offset -= step
                 time.sleep(0.1)
 
             elif key == ord('p'):
@@ -146,6 +154,8 @@ class Menu:
                 self.ctrl = self.present[3]
                 self.offset = self.present[4]
                 self.index = self.present[5]
+                self.play_vol = self.present[6]
+                self.play_id = self.present[7]
 
             elif key == ord('m'):
                 if view != 'menu':
