@@ -24,7 +24,7 @@ class UI:
         self.screen.move(2, 1)
         self.screen.clrtoeol()
         if pause:
-            self.screen.addstr(2, 10, '_ _ z Z Z', curses.color_pair(3))
+            self.screen.addstr(2, 10, '_ - z Z Z', curses.color_pair(3))
         else:
             self.screen.addstr(2, 10, '♩  ♪  ♫  ♬', curses.color_pair(3))
         self.screen.addstr(2, 24, name, curses.color_pair(4))

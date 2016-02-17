@@ -61,14 +61,15 @@ class Menu:
             key = self.screen.getch()
             self.ui.screen.refresh()
 
+            if view == 'songs':
+                length = len(model['songs'])
+            else:
+                length = len(model)
+
             if key == ord('q'):
                 break
 
             elif key == ord('k'):
-                if view == 'songs':
-                    length = len(model['songs'])
-                else:
-                    length = len(model)
                 if idx == offset:
                     if offset == 0:
                         continue
@@ -78,10 +79,6 @@ class Menu:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx - 1)
 
             elif key == ord('j'):
-                if view == 'songs':
-                    length = len(model['songs'])
-                else:
-                    length = len(model)
                 if idx == min(length, offset + step) - 1:
                     if offset + step >= length:
                         continue
@@ -90,6 +87,17 @@ class Menu:
                 else:
                     self.index = carousel(offset, min(length, offset + step) - 1, idx + 1)
 
+            elif key == ord('u'):
+                if offset == 0:
+                    continue
+                self.offset -= step
+                self.index = (index - step) // step * step
+
+            elif key == ord('i'):
+                if offset + step >= length:
+                    continue
+                self.offset += step
+                self.index = (index + step) // step *step
 
             elif key == ord('l'):
                 if self.view == 'songs':
