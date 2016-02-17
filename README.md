@@ -9,12 +9,17 @@
 需要安装 mpg123 ( Linux 系统自带, OS X 需要安装).
 
 ## 安装 & 运行：
+#### 通过 pip 安装
+`pip install nada`
+
+#### 通过源码安装
 `$ git clone git@github.com:ahonn/Nada.git`
 
 `$ cd Nada`
 
 `$ sudo python setup.py install`
 
+#### 运行
 `$ nada`
 
 ## 基本操作:
