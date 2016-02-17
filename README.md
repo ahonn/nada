@@ -10,7 +10,7 @@
 
 ## 安装 & 运行：
 #### 通过 pip 安装
-`pip install nada`
+`$ pip install nada`
 
 #### 通过源码安装
 `$ git clone git@github.com:ahonn/Nada.git`
