@@ -2,15 +2,23 @@
 
 > The mind is like a serpent, forgetting all its unsteadiness by hearing the nada, it does not run away anywhere.
 
-基于 Python2.7 的命令行音乐播放器( Windows 平台不可用 ), 目前包括 luoo 落网, echo 回声.
+基于 Python 的命令行音乐播放器( Windows 平台不可用 ), 目前包括 luoo 落网, echo 回声.
 
-需要 `BeautifulSoup`, `requests`, `lxml` 模块.
+[![platform](https://img.shields.io/badge/python-2.7-blue.svg)]()
+[![Software License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/ahonn/Nada/blob/master/LICENSE)
+[![versions](https://img.shields.io/badge/pypi-v0.1.2-blue.svg)](https://pypi.python.org/pypi/nada)
 
-需要安装 mpg123 ( Linux 系统自带, OS X 需要安装).
+[![nada](http://7xqvel.com1.z0.glb.clouddn.com/2.pic_hd.jpg)](https://pypi.python.org/pypi/nada)
 
 ## 安装 & 运行：
 #### 通过 pip 安装
-`$ pip install nada`
+`$ sudo pip install nada`
+
+OS X:  
+`$ brew install mpg123`
+
+Ubuntu:  
+`$ sudo apt-get install mpg123`
 
 #### 通过源码安装
 `$ git clone git@github.com:ahonn/Nada.git`
