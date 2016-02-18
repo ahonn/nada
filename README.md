@@ -2,7 +2,7 @@
 
 > The mind is like a serpent, forgetting all its unsteadiness by hearing the nada, it does not run away anywhere.
 
-基于 Python 的命令行音乐播放器( Windows 平台不可用 ), 目前包括 luoo 落网, echo 回声.
+基于 Python 的多网站命令行音乐播放器, 目前包括 luoo 落网, echo 回声.
 
 [![platform](https://img.shields.io/badge/python-2.7-blue.svg)]()
 [![Software License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/ahonn/Nada/blob/master/LICENSE)
@@ -43,6 +43,9 @@ Ubuntu:
   i   | 下一页
   [   | 上一首
   ]   | 下一首
+  a   | 加入收藏
+  r   | 移出收藏
+  c   | 进入收藏
 space | 播放/暂停
 
 ## To Do List
