@@ -3,7 +3,7 @@
 
 
 """
-Nada Player Menu 
+Nada Player Menu
 """
 
 import curses
@@ -184,7 +184,6 @@ class Menu:
                 if view == 'songs' and ctrl is not 'collections':
                     self.ui.status(model['songs'][idx]['name'], 'add')
                     self.collections.append(model['songs'][idx])
-                    self.index += 1
 
             elif key == ord('r'):
                 if ctrl == 'collections':
@@ -192,6 +191,11 @@ class Menu:
                         self.ui.status(model['songs'][idx]['name'], 'remove')
                         self.model['songs'].pop(idx)
                         self.index = carousel(offset, min(length, offset + step) - 1, idx)
+
+            elif key == ord('c'):
+                self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
+                self.title = 'Nada > nada 收藏'
+                self.collection()
 
             self.play_vol = self.player.play_vol
             self.play_id = self.player.play_id
@@ -249,14 +253,19 @@ class Menu:
 
         elif idx == 2:
             self.title += ' > nada 收藏'
-            self.model = {'number': 'collections', 'songs': self.collections}
-            self.view = 'songs'
-            self.ctrl = 'collections'
+            self.collection()
 
         elif idx == 3:
             self.title += ' > 关于'
             self.view = 'about'
             self.ctrl = 'about'
+
+    def collection(self):
+        self.model = {'number': 'collections', 'songs': self.collections}
+        self.view = 'songs'
+        self.ctrl = 'collections'
+        self.offset = 0
+        self.index = 0
 
     def luooMenu(self, idx):
         if idx == 0:
