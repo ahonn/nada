@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+"""
+Nada Player Menu 
+"""
+
 import curses
 import locale
 import sys
@@ -9,11 +14,14 @@ import time
 from api import Luoo, Echo
 from player import Player
 from ui import UI
+from database import Database
+from .common import *
 
 locale.setlocale(locale.LC_ALL, "")
 code = locale.getpreferredencoding()
 
-carousel = lambda left, right, x: left if (x > right) else (right if x < left else x)
+if os.path.isdir(BASE_PATH) is False:
+    os.mkdir(BASE_PATH)
 
 
 class Menu:
@@ -22,7 +30,7 @@ class Menu:
         sys.setdefaultencoding('UTF-8')
 
         self.title = 'Nada'
-        self.model = ['luoo 落网', 'echo 回声', '关于']
+        self.model = ['luoo 落网', 'echo 回声', 'nada 收藏', '关于']
         self.view = 'menu'
         self.ctrl = 'menu'
 
@@ -39,6 +47,10 @@ class Menu:
         self.ui = UI()
         self.luoo = Luoo()
         self.echo = Echo()
+
+        self.database = Database()
+        self.database.load()
+        self.collections = self.database.data['collections'][0]
 
         self.screen = curses.initscr()
         self.screen.keypad(1)
@@ -126,7 +138,7 @@ class Menu:
             elif key == ord(']'):
                 self.player.next_song()
                 if view == 'songs':
-                    self.index = self.player.play_id
+                    self.index = self.player.play_id % length
                     if idx == min(length, offset + step) - 1:
                         if offset + step >= length:
                             continue
@@ -136,7 +148,7 @@ class Menu:
             elif key == ord('['):
                 self.player.prev_song()
                 if view == 'songs':
-                    self.index = self.player.play_id
+                    self.index = self.player.play_id % length
                     if idx == offset:
                         if offset == 0:
                             continue
@@ -168,6 +180,16 @@ class Menu:
                     self.offset = self.stack[0][4]
                     self.index = self.stack[0][5]
 
+            elif key == ord('a'):
+                if view == 'songs':
+                    self.collections.append(model['songs'][idx])
+                    self.index += 1
+
+            elif key == ord('r'):
+                if ctrl == 'collections':
+                    self.model['songs'].pop(idx)
+                    self.index = carousel(offset, min(length, offset + step) - 1, idx)
+
             self.play_vol = self.player.play_vol
             self.play_id = self.player.play_id
             self.ui.build(self.title, self.model, self.view, self.offset, self.index, self.step, self.play_vol,
@@ -175,6 +197,7 @@ class Menu:
             self.ui.screen.refresh()
 
         self.player.stop()
+        self.database.save()
         curses.endwin()
 
     def control(self, idx):
@@ -222,7 +245,13 @@ class Menu:
             self.ctrl = 'echo'
 
         elif idx == 2:
-            self.title += ' > 关于 Nada'
+            self.title += ' > nada 收藏'
+            self.model = {'number': 'collections', 'songs': self.collections}
+            self.view = 'songs'
+            self.ctrl = 'collections'
+
+        elif idx == 3:
+            self.title += ' > 关于'
             self.view = 'about'
             self.ctrl = 'about'
 

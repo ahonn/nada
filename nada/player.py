@@ -6,13 +6,15 @@ import threading
 import signal
 import time
 import os
-from ui import UI
 
-carousel = lambda left, right, x: left if (x > right) else (right if x < left else x)
+from ui import UI
+from .common import *
 
 
 class Player:
     def __init__(self):
+        self.ui = UI()
+
         self.popen_handler = None
         self.play = False
         self.pause = False
@@ -20,8 +22,7 @@ class Player:
         self.play_vol = -1
         self.play_id = -1
         self.view = 'songs'
-        self.ui = UI()
-
+        
     def popen_recall(self, onExit, popenArgs):
         def runInThread(onExit, popenArgs):
             self.popen_handler = subprocess.Popen(['mpg123', popenArgs], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
