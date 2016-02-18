@@ -181,14 +181,17 @@ class Menu:
                     self.index = self.stack[0][5]
 
             elif key == ord('a'):
-                if view == 'songs':
+                if view == 'songs' and ctrl is not 'collections':
+                    self.ui.status(model['songs'][idx]['name'], 'add')
                     self.collections.append(model['songs'][idx])
                     self.index += 1
 
             elif key == ord('r'):
                 if ctrl == 'collections':
-                    self.model['songs'].pop(idx)
-                    self.index = carousel(offset, min(length, offset + step) - 1, idx)
+                    if length != 0:
+                        self.ui.status(model['songs'][idx]['name'], 'remove')
+                        self.model['songs'].pop(idx)
+                        self.index = carousel(offset, min(length, offset + step) - 1, idx)
 
             self.play_vol = self.player.play_vol
             self.play_id = self.player.play_id

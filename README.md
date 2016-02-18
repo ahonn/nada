@@ -55,7 +55,7 @@ space | 播放/暂停
 ## Change Log
 
 #### 2016.02.18 
-- [Add] 增加 common & database 
+- [Add] 增加 common & database
 - [Add] 增加收藏功能, 添加或删除收藏夹中的歌曲, 并将记录储存到本地
 
 #### 2016.02.17

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import curses
-
+import time
 
 class UI:
     def __init__(self):
@@ -29,6 +29,19 @@ class UI:
             self.screen.addstr(2, 10, '♩  ♪  ♫  ♬', curses.color_pair(3))
         self.screen.addstr(2, 24, name, curses.color_pair(4))
         self.screen.refresh()
+
+    def status(self, info, opt):
+        if opt == 'add':
+            string = 'Add <' + info + '>'
+        elif opt == 'remove':
+            string = 'Remove <' + info + '>'
+        self.screen.move(20, 1)
+        self.screen.clrtoeol()
+        self.screen.addstr(20, 10, string, curses.color_pair(1))
+        self.screen.refresh()
+        time.sleep(0.5)
+        self.screen.move(20, 1)
+        self.screen.clrtoeol()
 
     def loading(self):
         self.screen.addstr(6, 10, '♫  ♪ Nada ♫  ♪ Loading...', curses.color_pair(1))
