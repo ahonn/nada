@@ -11,7 +11,7 @@
 [![nada](http://7xqvel.com1.z0.glb.clouddn.com/2.pic_hd.jpg?imageView/3/w/600/q/100)](https://pypi.python.org/pypi/nada)
 
 ## 安装 & 运行：
-可通过 pip 安装和下载源码安装, pip install 的可能不是最新版本.
+
 #### 通过 pip 安装
 `$ sudo pip install nada`
 
