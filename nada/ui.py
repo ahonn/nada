@@ -30,14 +30,11 @@ class UI:
         self.screen.addstr(2, 24, name, curses.color_pair(4))
         self.screen.refresh()
 
-    def status(self, info, opt):
-        if opt == 'add':
-            string = 'Add <' + info + '>'
-        elif opt == 'remove':
-            string = 'Remove <' + info + '>'
+    def status(self, info, opt, color=1):
+        string = opt + ' <' + info + '>'
         self.screen.move(20, 1)
         self.screen.clrtoeol()
-        self.screen.addstr(20, 10, string, curses.color_pair(1))
+        self.screen.addstr(20, 10, string, curses.color_pair(color))
         self.screen.refresh()
         time.sleep(0.5)
         self.screen.move(20, 1)

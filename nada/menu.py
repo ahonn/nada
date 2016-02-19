@@ -11,10 +11,11 @@ import locale
 import sys
 import time
 
-from api import Luoo, Echo
-from player import Player
 from ui import UI
+from player import Player
+from api import Luoo, Echo
 from database import Database
+from downloader import Downloader
 from .common import *
 
 locale.setlocale(locale.LC_ALL, "")
@@ -47,6 +48,7 @@ class Menu:
         self.ui = UI()
         self.luoo = Luoo()
         self.echo = Echo()
+        self.downloader = Downloader()
 
         self.database = Database()
         self.database.load()
@@ -182,13 +184,13 @@ class Menu:
 
             elif key == ord('a'):
                 if view == 'songs' and ctrl is not 'collections':
-                    self.ui.status(model['songs'][idx]['name'], 'add')
+                    self.ui.status(model['songs'][idx]['name'], 'Add', 5)
                     self.collections.append(model['songs'][idx])
 
             elif key == ord('r'):
                 if ctrl == 'collections':
                     if length != 0:
-                        self.ui.status(model['songs'][idx]['name'], 'remove')
+                        self.ui.status(model['songs'][idx]['name'], 'Remove', 3)
                         self.model['songs'].pop(idx)
                         self.index = carousel(offset, min(length, offset + step) - 1, idx)
 
@@ -196,6 +198,10 @@ class Menu:
                 self.stack.append([self.title, self.model, self.view, self.ctrl, self.offset, self.index])
                 self.title = 'Nada > nada 收藏'
                 self.collection()
+
+            elif key == ord('d'):
+                if view == 'songs':
+                    self.downloader.download(model['songs'][idx])
 
             self.play_vol = self.player.play_vol
             self.play_id = self.player.play_id

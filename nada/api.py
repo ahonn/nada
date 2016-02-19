@@ -169,7 +169,8 @@ class Echo:
         for item in items:
             songs.append({
                 "name": item['name'],
-                # "artist": item['channel']['name'],
+                "artist": item['channel']['name'],
                 "source": item['source']
             })
         return songs
+     
