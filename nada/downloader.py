@@ -3,6 +3,7 @@
 
 import os
 import urllib
+import threading
 
 from ui import UI
 from .common import *
@@ -19,16 +20,17 @@ class Downloader:
         url = song['source']
         filename = song['name'] + ' - ' + song['artist'] + '.mp3'
         path = os.path.join(self.path, filename)
-        self.ui.status(song['name'], 'Downloading')
         try:
+            self.ui.status(filename, 'Downloading')
             if not os.path.exists(path):
-                urllib.urlretrieve(url , path)
-                status = 'Finish Download'
-                color = 5
+                def download_thread(url, path):
+                    urllib.urlretrieve(url , path)
+                    self.ui.status(filename, 'Finish Download', 5)
+                thread = threading.Thread(target=download_thread, args=(url, path))
+                thread.start()
             else:
-                status = 'Exists  Download'
-                color = 4
+                self.ui.status(filename, 'Exists Download', 4)
         except:
-            status = 'Error  Download'
-            color = 3
-        self.ui.status(song['name'], status, color)
+            self.ui.status(filename, 'Error Download', 3)
+        
+        
