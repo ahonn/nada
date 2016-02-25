@@ -4,6 +4,7 @@
 import curses
 import time
 
+
 class UI:
     def __init__(self):
         self.screen = curses.initscr()

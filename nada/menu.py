@@ -111,7 +111,7 @@ class Menu:
                 if offset + step >= length:
                     continue
                 self.offset += step
-                self.index = (index + step) // step *step
+                self.index = (index + step) // step * step
 
             elif key == ord('l'):
                 if self.view == 'songs':
@@ -134,7 +134,7 @@ class Menu:
 
             elif key == ord(' '):
                 if view == 'songs':
-                    self.present = [title, model, view, ctrl, offset, index, self.play_vol, self.play_id]
+                    self.present = [title, model, view, ctrl, offset]
                 self.player.play_song(view, model, idx)
 
             elif key == ord(']'):
@@ -166,10 +166,8 @@ class Menu:
                 self.model = self.present[1]
                 self.view = self.present[2]
                 self.ctrl = self.present[3]
-                self.offset = self.present[4]
-                self.index = self.present[5]
-                self.play_vol = self.present[6]
-                self.play_id = self.present[7]
+                self.index = idx = self.player.play_id
+                self.offset = idx // step * step
 
             elif key == ord('m'):
                 if view != 'menu':

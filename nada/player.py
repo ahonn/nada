@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import signal
 import subprocess
 import threading
-import signal
 import time
-import os
 
 from ui import UI
 from .common import *
