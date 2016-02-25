@@ -13,7 +13,7 @@
 ## 安装 & 运行：
 
 #### 通过 pip 安装(推荐)
-`$ (sudo) pip (--upgrade) install nada`
+`$ (sudo) pip install (--upgrade) nada`
 
 OS X:  
 `$ brew install mpg123`
