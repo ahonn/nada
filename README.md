@@ -22,7 +22,7 @@ Ubuntu:
 `$ sudo apt-get install mpg123`
 
 #### 通过源码安装
-`$ git clone git@github.com:ahonn/Nada.git`
+`$ git clone https://github.com/ahonn/Nada.git`
 
 `$ cd Nada`
 
