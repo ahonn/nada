@@ -2,7 +2,7 @@
 
 > The mind is like a serpent, forgetting all its unsteadiness by hearing the nada, it does not run away anywhere.
 
-基于 Python 的多网站命令行音乐播放器, 目前包括 luoo 落网, echo 回声.
+基于 Python 的多网站命令行音乐播放器, 目前包括 luoo 落网, ~~echo 回声~~.
 
 [![platform](https://img.shields.io/badge/python-2.7-blue.svg)]()
 [![Software License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/ahonn/Nada/blob/master/LICENSE)
@@ -61,18 +61,21 @@ space | 播放/暂停
 
 ## Change Log
 
-#### 2016.02.25 
+#### 2016.03.06
+- [TODO] echo API 无法使用，待解决。暂时移除。
+
+#### 2016.02.25
 - [Fix] 修复自动播放下一曲后，快捷键 p 返回当前播放时光标不跟随
 
-#### 2016.02.20 
+#### 2016.02.20
 - [Update] 使用多线程下载歌曲
 
-#### 2016.02.19 
+#### 2016.02.19
 - [Add] 增加歌曲下载, 暂无多线程
-- [Add] 添加收藏热键 c 
+- [Add] 添加收藏热键 c
 - [Change] 修改操作状态栏文字颜色
 
-#### 2016.02.18 
+#### 2016.02.18
 - [Add] 增加 common & database
 - [Add] 增加收藏功能, 添加或删除收藏夹中的歌曲, 并将记录储存到本地
 

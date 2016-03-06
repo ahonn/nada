@@ -13,7 +13,7 @@ import time
 
 from ui import UI
 from player import Player
-from api import Luoo, Echo
+from api import Luoo
 from database import Database
 from downloader import Downloader
 from .common import *
@@ -31,7 +31,7 @@ class Menu:
         sys.setdefaultencoding('UTF-8')
 
         self.title = 'Nada'
-        self.model = ['luoo 落网', 'echo 回声', 'nada 收藏', '关于']
+        self.model = ['luoo 落网', 'nada 收藏', '关于']
         self.view = 'menu'
         self.ctrl = 'menu'
 
@@ -47,7 +47,6 @@ class Menu:
         self.player = Player()
         self.ui = UI()
         self.luoo = Luoo()
-        self.echo = Echo()
         self.downloader = Downloader()
 
         self.database = Database()
@@ -227,18 +226,6 @@ class Menu:
         elif ctrl == 'luoo_vtype':
             self.luoo_vtype(idx)
 
-        elif ctrl == 'echo':
-            self.echoMenu(idx)
-
-        elif ctrl == 'echo_hot':
-            self.echo_hot(idx)
-
-        elif ctrl == 'echo_tag':
-            self.echo_tag(idx)
-
-        elif ctrl == 'echo_vol':
-            self.echo_vol(idx)
-
         self.offset = 0
         self.index = 0
 
@@ -250,16 +237,10 @@ class Menu:
             self.ctrl = 'luoo'
 
         elif idx == 1:
-            self.title += ' > echo 回声'
-            self.model = ['每日推荐', '热门推荐', '频道分类']
-            self.view = 'list'
-            self.ctrl = 'echo'
-
-        elif idx == 2:
             self.title += ' > nada 收藏'
             self.collection()
 
-        elif idx == 3:
+        elif idx == 2:
             self.title += ' > 关于'
             self.view = 'about'
             self.ctrl = 'about'
@@ -307,58 +288,3 @@ class Menu:
         self.model = self.luoo.vols(type_number)
         self.view = 'vols'
         self.ctrl = 'luoo_vols'
-
-    def echoMenu(self, idx):
-        if idx == 0:
-            self.title += ' > 每日推荐'
-            self.model = self.echo.new()
-            self.view = 'songs'
-            self.ctrl = 'songs'
-
-        elif idx == 1:
-            self.title += ' > 热门推荐'
-            self.model = ['本日热门', '本周热门', '本月热门']
-            self.view = 'list'
-            self.ctrl = 'echo_hot'
-
-        elif idx == 2:
-            self.title += ' > 频道分类'
-            self.model = self.echo.all_tag()
-            self.view = 'vols'
-            self.ctrl = 'echo_tag'
-
-    def echo_hot(self, idx):
-        if idx == 0:
-            self.title += ' > 本日热门'
-            self.model = self.echo.daily_hot()
-
-        elif idx == 1:
-            self.title += ' > 本周热门'
-            self.model = self.echo.weekly_hot()
-
-        elif idx == 2:
-            self.title += ' > 本月热门'
-            self.model = self.echo.monthly_hot()
-
-        self.view = 'songs'
-        self.ctrl = 'songs'
-
-    def echo_tag(self, idx):
-        self.title += ' > ' + self.model[idx]['name']
-        if idx == 0:
-            self.model = self.echo.new_vols()
-        elif idx == 1:
-            self.model = self.echo.hot_vols()
-        else:
-            tag_number = self.model[idx]['number']
-            self.model = self.echo.tag_vols(tag_number)
-
-        self.view = 'vols'
-        self.ctrl = 'echo_vol'
-
-    def echo_vol(self, idx):
-        self.title += ' > ' + self.model[idx]['name']
-        vol_number = self.model[idx]['number']
-        self.model = self.echo.vol(vol_number)
-        self.view = 'songs'
-        self.ctrl = 'songs'
