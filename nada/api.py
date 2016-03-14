@@ -27,24 +27,24 @@ class Luoo:
             items = soup.find_all("a", class_="name")
             for item in items:
                 vols.append({
-                    "number": item["href"].split('/')[-1],
+                    "id": item["href"].split('/')[-1],
                     "name": item.string.encode("utf-8")
                 })
         return vols
 
-    def vol(self, number):
-        url = self.url + '/music/' + number
+    def vol(self, id):
+        url = self.url + '/music/' + id
         soup = self.parser(url)
 
         title = soup.find("span", class_="vol-title").text
-        vol = {'number': number, 'title': title, 'songs': []}
+        vol = {'id': id, 'title': title, 'songs': []}
 
         items = soup.find_all("li", class_="track-item")
         for i, item in enumerate(items):
             vol['songs'].append({
                 "name": item.find("a", class_="trackname").text.split(' ', 1)[1],
                 "artist": item.find("span", class_="artist").text,
-                "source": 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + number + '/' + str(
+                "source": 'http://luoo-mp3.kssws.ks-cdn.com/low/luoo/radio' + id + '/' + str(
                     "%02d" % (i + 1)) + '.mp3'
             })
         return vol
@@ -60,7 +60,7 @@ class Luoo:
                 continue
             vtype.append({
                 "name": item.text,
-                "number": item["href"].split('/')[-1]
+                "id": item["href"].split('/')[-1]
             })
         return vtype
 
@@ -89,23 +89,23 @@ class Douban:
             })
         return hots[1:]
 
-    def artists_list(self, number):
+    def artists_list(self, id):
         artists = []
-        url = self.url + '/artists/genre_page/' + str(number)
+        url = self.url + '/artists/genre_page/' + str(id)
         soup = self.parser(url)
 
         items = soup.find_all("div", class_="photoin")
         for item in items:
             item = item.find("div", class_="ll").find("a")
             artists.append({
-                "number": item["href"].split('/')[-2],
+                "id": item["href"].split('/')[-2],
                 "name": item.text
             })
         return artists
 
     def artist_songs(self, artist):
-        vol = {'number': artist["number"], 'songs': []}
-        url = self.site_url + artist["number"]
+        vol = {'id': artist["id"], 'songs': []}
+        url = self.site_url + artist["id"]
         soup = self.parser(url)
 
         sids = []
@@ -121,11 +121,7 @@ class Douban:
             vol['songs'].append({
                 "name": item.text.strip(),
                 "artist": artist["name"],
-                "source": play_list[0]
+                "source": play_list[n]
             })
             n += 2
         return vol
-
-if __name__ == '__main__':
-    douban = Douban()
-    douban.artist_songs({'id': 'hejingxin', 'name': '何璟昕'})

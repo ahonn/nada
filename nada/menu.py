@@ -31,7 +31,7 @@ class Menu:
         sys.setdefaultencoding('UTF-8')
 
         self.title = 'Nada'
-        self.model = ['落网音乐', '豆瓣音乐人', 'nada 收藏', '关于']
+        self.model = ['落网音乐', '豆瓣音乐人', '收藏夹', '关于']
         self.view = 'menu'
         self.ctrl = 'menu'
 
@@ -253,7 +253,7 @@ class Menu:
             self.ctrl = 'douban'
 
         elif idx == 1:
-            self.title += ' > nada 收藏'
+            self.title += ' > 收藏夹'
             self.collection()
 
         elif idx == 2:
@@ -262,7 +262,7 @@ class Menu:
             self.ctrl = 'about'
 
     def collection(self):
-        self.model = {'number': 'collections', 'songs': self.collections}
+        self.model = {'id': 'collections', 'songs': self.collections}
         self.view = 'songs'
         self.ctrl = 'collections'
         self.offset = 0
@@ -282,10 +282,10 @@ class Menu:
             self.ctrl = 'luoo_vtype'
 
         elif idx == 2:
-            vol_number = self.ui.search('搜索期刊: ')
+            vol_id = self.ui.search('搜索期刊: ')
             try:
-                self.model = self.luoo.vol(vol_number)
-                self.title += ' > 搜索期刊 > Vol.' + self.model['number'] + ' ' + self.model['title']
+                self.model = self.luoo.vol(vol_id)
+                self.title += ' > 搜索期刊 > Vol.' + self.model['id'] + ' ' + self.model['title']
                 self.view = 'songs'
                 self.ctrl = 'songs'
             except Exception, e:
@@ -293,15 +293,15 @@ class Menu:
 
     def luoo_vols(self, idx):
         self.title += ' > ' + self.model[idx]['name']
-        vol_number = self.model[idx]['number']
-        self.model = self.luoo.vol(vol_number)
+        vol_id = self.model[idx]['id']
+        self.model = self.luoo.vol(vol_id)
         self.view = 'songs'
         self.ctrl = 'songs'
 
     def luoo_vtype(self, idx):
         self.title += ' > ' + self.model[idx]['name']
-        type_number = self.model[idx]['number']
-        self.model = self.luoo.vols(type_number)
+        type_id = self.model[idx]['id']
+        self.model = self.luoo.vols(type_id)
         self.view = 'vols'
         self.ctrl = 'luoo_vols'
 

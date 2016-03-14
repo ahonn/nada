@@ -21,7 +21,7 @@ class Player:
         self.play_vol = -1
         self.play_id = -1
         self.view = 'songs'
-        
+
     def popen_recall(self, onExit, popenArgs):
         def runInThread(onExit, popenArgs):
             self.popen_handler = subprocess.Popen(['mpg123', popenArgs], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -47,7 +47,7 @@ class Player:
 
         if view == 'songs':
             songs = model['songs']
-            number = model['number']
+            id = model['id']
 
             if idx == self.play_id and songs == self.songs:
                 if self.pause:
@@ -57,7 +57,7 @@ class Player:
             else:
                 self.songs = songs
                 self.play_id = idx
-                self.play_vol = number
+                self.play_vol = id
 
                 if self.play:
                     self.switch()

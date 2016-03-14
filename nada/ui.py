@@ -80,13 +80,13 @@ class UI:
                         self.screen.addstr(i - offset + 8, 10, model[i]["name"])
 
             elif view == 'songs':
-                vol_number = model['number']
+                vol_id = model['id']
                 songs = model['songs']
                 for i in xrange(offset, min(len(songs), offset + step)):
-                    if i == index and i == play_id and play_vol == vol_number:
+                    if i == index and i == play_id and play_vol == vol_id:
                         self.screen.addstr(i - offset + 8, 7, '>> ' + str(i) + '. ' + songs[i]['name'],
                                            curses.color_pair(2))
-                    elif i == play_id and play_vol == vol_number:
+                    elif i == play_id and play_vol == vol_id:
                         self.screen.addstr(i - offset + 8, 8, '> ' + str(i) + '. ' + songs[i]['name'],
                                            curses.color_pair(5))
                     elif i == index:
