@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -61,3 +63,69 @@ class Luoo:
                 "number": item["href"].split('/')[-1]
             })
         return vtype
+
+
+class Douban:
+    def __init__(self):
+        self.url = "https://music.douban.com"
+        self.site_url = "https://site.douban.com/"
+        self.play_url = "https://music.douban.com/j/artist/playlist"
+        self.player_url = "https://music.douban.com/artists/player/"
+
+    def parser(self, url):
+        request = requests.get(url)
+        return BeautifulSoup(request.content, "lxml")
+
+    def hot(self):
+        hots = []
+        soup = self.parser(self.url)
+
+        tag_block = soup.find("div", class_="tag-block")
+        items = tag_block.find_all("a")
+        for item in items:
+            hots.append({
+                "id": item["href"].split('/')[-2],
+                "name": item.text
+            })
+        return hots[1:]
+
+    def artists_list(self, number):
+        artists = []
+        url = self.url + '/artists/genre_page/' + str(number)
+        soup = self.parser(url)
+
+        items = soup.find_all("div", class_="photoin")
+        for item in items:
+            item = item.find("div", class_="ll").find("a")
+            artists.append({
+                "number": item["href"].split('/')[-2],
+                "name": item.text
+            })
+        return artists
+
+    def artist_songs(self, artist):
+        vol = {'number': artist["number"], 'songs': []}
+        url = self.site_url + artist["number"]
+        soup = self.parser(url)
+
+        sids = []
+        items = soup.find_all("td", class_="title player-playable")
+        for item in items:
+            sids.append(item["data-sid"])
+        list_url = self.player_url + '?sid=' + ",".join(sids) + '&source=site'
+        soup = self.parser(list_url)
+        content = soup.find_all("script")
+        play_list = re.findall(' "url": "(.*?)", ', content[0].text)
+        n = 0
+        for item in items:
+            vol['songs'].append({
+                "name": item.text.strip(),
+                "artist": artist["name"],
+                "source": play_list[0]
+            })
+            n += 2
+        return vol
+
+if __name__ == '__main__':
+    douban = Douban()
+    douban.artist_songs({'id': 'hejingxin', 'name': '何璟昕'})

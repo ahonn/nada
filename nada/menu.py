@@ -13,7 +13,7 @@ import time
 
 from ui import UI
 from player import Player
-from api import Luoo
+from api import Luoo, Douban
 from database import Database
 from downloader import Downloader
 from .common import *
@@ -31,7 +31,7 @@ class Menu:
         sys.setdefaultencoding('UTF-8')
 
         self.title = 'Nada'
-        self.model = ['luoo 落网', 'nada 收藏', '关于']
+        self.model = ['落网音乐', '豆瓣音乐人', 'nada 收藏', '关于']
         self.view = 'menu'
         self.ctrl = 'menu'
 
@@ -47,6 +47,7 @@ class Menu:
         self.player = Player()
         self.ui = UI()
         self.luoo = Luoo()
+        self.douban = Douban()
         self.downloader = Downloader()
 
         self.database = Database()
@@ -226,15 +227,30 @@ class Menu:
         elif ctrl == 'luoo_vtype':
             self.luoo_vtype(idx)
 
+        elif ctrl == 'douban':
+            self.doubanMenu(idx)
+
+        elif ctrl == 'douban_hot':
+            self.douban_hot(idx)
+
+        elif ctrl == 'douban_artist':
+            self.douban_artist(idx)
+
         self.offset = 0
         self.index = 0
 
     def menu(self, idx):
         if idx == 0:
-            self.title += ' > luoo 落网'
+            self.title += ' > 落网音乐'
             self.model = ['最新期刊', '分类期刊', '搜索期刊']
             self.view = 'list'
             self.ctrl = 'luoo'
+
+        if idx == 1:
+            self.title += ' > 豆瓣音乐人'
+            self.model = ['热门分类']
+            self.view = 'list'
+            self.ctrl = 'douban'
 
         elif idx == 1:
             self.title += ' > nada 收藏'
@@ -288,3 +304,23 @@ class Menu:
         self.model = self.luoo.vols(type_number)
         self.view = 'vols'
         self.ctrl = 'luoo_vols'
+
+    def doubanMenu(self, idx):
+        if idx == 0:
+            self.title += ' > 热门分类'
+            self.model = self.douban.hot()
+            self.view = 'vols'
+            self.ctrl = 'douban_hot'
+
+    def douban_hot(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        artist_id = self.model[idx]['id']
+        self.model = self.douban.artists_list(artist_id)
+        self.view = 'vols'
+        self.ctrl = 'douban_artist'
+
+    def douban_artist(self, idx):
+        self.title += ' > ' + self.model[idx]['name']
+        self.model = self.douban.artist_songs(self.model[idx])
+        self.view = 'songs'
+        self.ctrl = 'songs'
