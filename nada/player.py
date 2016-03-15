@@ -39,7 +39,7 @@ class Player:
     def recall(self):
         self.play = True
         song = self.songs[self.play_id]
-        self.ui.playinfo(song['name'])
+        self.ui.playinfo(song)
         self.popen_recall(self.recall, song['source'])
 
     def play_song(self, view, model, idx):
@@ -74,12 +74,12 @@ class Player:
     def pause_song(self):
         self.pause = True
         os.kill(self.popen_handler.pid, signal.SIGSTOP)
-        self.ui.playinfo(self.songs[self.play_id]['name'], pause=True)
+        self.ui.playinfo(self.songs[self.play_id], pause=True)
 
     def resume(self):
         self.pause = False
         os.kill(self.popen_handler.pid, signal.SIGCONT)
-        self.ui.playinfo(self.songs[self.play_id]['name'])
+        self.ui.playinfo(self.songs[self.play_id])
 
     def switch(self):
         self.stop()

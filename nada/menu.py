@@ -246,17 +246,17 @@ class Menu:
             self.view = 'list'
             self.ctrl = 'luoo'
 
-        if idx == 1:
+        elif idx == 1:
             self.title += ' > 豆瓣音乐人'
-            self.model = ['热门分类']
+            self.model = ['本周单曲榜', '热门音乐人']
             self.view = 'list'
             self.ctrl = 'douban'
 
-        elif idx == 1:
+        elif idx == 2:
             self.title += ' > 收藏夹'
             self.collection()
 
-        elif idx == 2:
+        elif idx == 3:
             self.title += ' > 关于'
             self.view = 'about'
             self.ctrl = 'about'
@@ -307,7 +307,13 @@ class Menu:
 
     def doubanMenu(self, idx):
         if idx == 0:
-            self.title += ' > 热门分类'
+            self.title += ' > 本周单曲榜'
+            self.model = self.douban.hot_songs()
+            self.view = 'songs'
+            self.songs = 'song'
+
+        elif idx == 1:
+            self.title += ' > 热门音乐人'
             self.model = self.douban.hot()
             self.view = 'vols'
             self.ctrl = 'douban_hot'

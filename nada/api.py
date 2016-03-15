@@ -103,6 +103,13 @@ class Douban:
             })
         return artists
 
+    def source(self, sids):
+        list_url = self.player_url + '?sid=' + ",".join(sids) + '&source=site'
+        soup = self.parser(list_url)
+        content = soup.find_all("script")
+        source = re.findall(' "url": "(.*?)", ', content[0].text)
+        return source
+
     def artist_songs(self, artist):
         vol = {'id': artist["id"], 'songs': []}
         url = self.site_url + artist["id"]
@@ -112,16 +119,46 @@ class Douban:
         items = soup.find_all("td", class_="title player-playable")
         for item in items:
             sids.append(item["data-sid"])
-        list_url = self.player_url + '?sid=' + ",".join(sids) + '&source=site'
-        soup = self.parser(list_url)
-        content = soup.find_all("script")
-        play_list = re.findall(' "url": "(.*?)", ', content[0].text)
+        source = self.source(sids)
         n = 0
         for item in items:
             vol['songs'].append({
                 "name": item.text.strip(),
                 "artist": artist["name"],
-                "source": play_list[n]
+                "source": source[n]
+            })
+            n += 2
+        return vol
+
+    def hot_songs(self):
+        vol = {'id': 'hot_songs', 'songs': []}
+        soup = self.parser(self.url)
+        content = soup.find_all("script")
+        sids_list = re.findall('{"index":(.*?)}', content[-7].text)
+
+        sids = []
+        title = []
+        artist_name = []
+        for item in sids_list:
+            title.append(re.findall('"title":"(.*?)"', item)[0])
+            artist_name.append(re.findall('"artist_name":"(.*?)"', item)[0])
+            sids.append(re.findall('"sid":"(.*?)"', item)[0])
+
+        name = []
+        artist = []
+        for i in title:
+            if not i in name:
+                name.append(i)
+        for i in artist_name:
+            if not i in artist:
+                artist.append(i)
+        source = self.source(sids)
+        n = 0
+        for x in xrange(len(name)):
+            vol['songs'].append({
+                "name": name[x],
+                "artist": artist[x],
+                "source": source[n]
             })
             n += 2
         return vol
