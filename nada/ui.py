@@ -99,7 +99,7 @@ class UI:
                 self.screen.addstr(8, 12, 'The mind is like a serpent, ')
                 self.screen.addstr(9, 12, 'forgetting all its unsteadiness by hearing the nada,')
                 self.screen.addstr(10, 12, 'it does not run away anywhere.')
-                self.screen.addstr(12, 45, 'By Ahonn@Nada-0.1.4')
+                self.screen.addstr(12, 45, 'By Ahonn@Nada-0.1.5')
 
     def search(self, string):
         self.screen.move(4, 1)

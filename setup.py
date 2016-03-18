@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='nada',
-    version='0.1.4',
+    version='0.1.5',
     keywords=['music', 'luoo', 'cli', 'player'],
     description="Multi music website command line player",
     license='MIT License',

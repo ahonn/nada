@@ -137,21 +137,12 @@ class Douban:
         sids_list = re.findall('{"index":(.*?)}', content[-7].text)
 
         sids = []
-        title = []
-        artist_name = []
-        for item in sids_list:
-            title.append(re.findall('"title":"(.*?)"', item)[0])
-            artist_name.append(re.findall('"artist_name":"(.*?)"', item)[0])
-            sids.append(re.findall('"sid":"(.*?)"', item)[0])
-
         name = []
         artist = []
-        for i in title:
-            if not i in name:
-                name.append(i)
-        for i in artist_name:
-            if not i in artist:
-                artist.append(i)
+        for item in zip(sids_list, xrange(10)):
+            name.append(re.findall('"title":"(.*?)"', item[0])[0])
+            artist.append(re.findall('"artist_name":"(.*?)"', item[0])[0])
+            sids.append(re.findall('"sid":"(.*?)"', item[0])[0])
         source = self.source(sids)
         n = 0
         for x in xrange(len(name)):

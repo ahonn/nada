@@ -248,7 +248,7 @@ class Menu:
 
         elif idx == 1:
             self.title += ' > 豆瓣音乐人'
-            self.model = ['本周单曲榜', '热门音乐人']
+            self.model = ['最热单曲榜', '热门音乐人']
             self.view = 'list'
             self.ctrl = 'douban'
 
@@ -307,7 +307,7 @@ class Menu:
 
     def doubanMenu(self, idx):
         if idx == 0:
-            self.title += ' > 本周单曲榜'
+            self.title += ' > 最热单曲榜'
             self.model = self.douban.hot_songs()
             self.view = 'songs'
             self.songs = 'song'
