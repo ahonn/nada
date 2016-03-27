@@ -129,27 +129,3 @@ class Douban:
             })
             n += 2
         return vol
-
-    def hot_songs(self):
-        vol = {'id': 'hot_songs', 'songs': []}
-        soup = self.parser(self.url)
-        content = soup.find_all("script")
-        sids_list = re.findall('{"index":(.*?)}', content[-7].text)
-
-        sids = []
-        name = []
-        artist = []
-        for item in zip(sids_list, xrange(10)):
-            name.append(re.findall('"title":"(.*?)"', item[0])[0])
-            artist.append(re.findall('"artist_name":"(.*?)"', item[0])[0])
-            sids.append(re.findall('"sid":"(.*?)"', item[0])[0])
-        source = self.source(sids)
-        n = 0
-        for x in xrange(len(name)):
-            vol['songs'].append({
-                "name": name[x],
-                "artist": artist[x],
-                "source": source[n]
-            })
-            n += 2
-        return vol
