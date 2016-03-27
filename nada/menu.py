@@ -230,6 +230,9 @@ class Menu:
         elif ctrl == 'douban':
             self.doubanMenu(idx)
 
+        elif ctrl == 'douban_hot':
+            self.douban_hot(idx)
+
         elif ctrl == 'douban_artist':
             self.douban_artist(idx)
 
