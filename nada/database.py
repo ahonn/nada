@@ -27,7 +27,8 @@ class Database(Singleton):
         self.save()
 
     def save(self):
-        os.remove(self.path)
+        if os.path.isfile(self.path):
+            os.remove(self.path)
         self.file = file(self.path, 'w')
         self.file.write(json.dumps(self.data))
         self.file.close
