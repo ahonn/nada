@@ -12,7 +12,7 @@ class Luoo:
         self.url = 'http://www.luoo.net'
 
     def parser(self, url):
-        request = requests.get(url)
+        request = requests.get(url, timeout=5)
         return BeautifulSoup(request.content, "lxml")
 
     def new(self):

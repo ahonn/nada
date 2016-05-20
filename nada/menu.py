@@ -277,4 +277,4 @@ class Menu:
         type_id = self.model[idx]['id']
         self.model = self.luoo.vols(type_id)
         self.view = 'vols'
-        self.ctrl = 'luoo_vols'
+        self.ctrl = 'vols'
