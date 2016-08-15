@@ -8,7 +8,7 @@
 [![Software License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/ahonn/Nada/blob/master/LICENSE)
 [![versions](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.python.org/pypi/nada)
 
-[![nada](/usr/local/bin)](https://pypi.python.org/pypi/nada)
+[![nada](http://ww3.sinaimg.cn/large/006tKfTcgw1f6ufmlnvg4j31bo0xqjwv.jpg)](https://pypi.python.org/pypi/nada)
 
 ## 安装 & 运行：
 
