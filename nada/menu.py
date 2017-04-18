@@ -7,8 +7,6 @@ Nada Player Menu
 """
 
 import curses
-import locale
-import sys
 import time
 
 from ui import UI
@@ -18,17 +16,12 @@ from database import Database
 from downloader import Downloader
 from .common import *
 
-locale.setlocale(locale.LC_ALL, "")
-code = locale.getpreferredencoding()
-
 if os.path.isdir(BASE_PATH) is False:
     os.mkdir(BASE_PATH)
 
 
 class Menu:
     def __init__(self):
-        reload(sys)
-        sys.setdefaultencoding('UTF-8')
 
         self.title = 'Nada'
         self.model = ['最新期刊', '分类期刊', '搜索期刊', '收藏夹', '关于']
